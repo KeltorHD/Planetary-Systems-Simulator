@@ -1,5 +1,7 @@
 #pragma once
 
+class PhysSimulation;
+
 class SpaceObj
 {
 public:
@@ -18,6 +20,12 @@ public:
 		double vx, double vy,
 		double ax, double ay,
 		double radius, sf::Color obj_color, obj_t type);
+
+	/*дистанция до другого объекта*/
+	double distance(const SpaceObj& obj) const;
+
+	/*дружественный класс для физической симуляции*/
+	friend class PhysSimulation;
 	
 private:
 	double mass;			 /*масса*/

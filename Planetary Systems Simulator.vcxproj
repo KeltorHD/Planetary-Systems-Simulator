@@ -87,7 +87,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)external\SFML-2.5.1\include;$(SolutionDir)external\imgui-1.79\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)external\SFML-2.5.1\include\;$(SolutionDir)external\imgui-1.79\;$(SolutionDir)src\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
@@ -120,7 +120,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)external\SFML-2.5.1\include;$(SolutionDir)external\imgui-1.79\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)external\SFML-2.5.1\include;$(SolutionDir)external\imgui-1.79\;$(SolutionDir)src\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -156,9 +156,14 @@
     <ClCompile Include="external\imgui-1.79\imgui_demo.cpp" />
     <ClCompile Include="external\imgui-1.79\imgui_draw.cpp" />
     <ClCompile Include="external\imgui-1.79\imgui_widgets.cpp" />
+    <ClCompile Include="src\physSim\physSimulation.cpp" />
+    <ClCompile Include="src\states\mainMenuState\mainMenuState.cpp" />
+    <ClCompile Include="src\engine\program.cpp" />
+    <ClCompile Include="src\states\gfxSettings\graphicsSettings.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\pch.cpp" />
-    <ClCompile Include="src\spaceObj.cpp" />
+    <ClCompile Include="src\physSim\spaceObj.cpp" />
+    <ClCompile Include="src\states\state.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="external\imgui-1.79\imconfig.h" />
@@ -169,8 +174,13 @@
     <ClInclude Include="external\imgui-1.79\imstb_rectpack.h" />
     <ClInclude Include="external\imgui-1.79\imstb_textedit.h" />
     <ClInclude Include="external\imgui-1.79\imstb_truetype.h" />
+    <ClInclude Include="src\physSim\physSimulation.hpp" />
+    <ClInclude Include="src\states\mainMenuState\mainMenuState.hpp" />
+    <ClInclude Include="src\engine\program.hpp" />
+    <ClInclude Include="src\states\gfxSettings\graphicsSettings.hpp" />
     <ClInclude Include="src\pch.h" />
-    <ClInclude Include="src\spaceObj.hpp" />
+    <ClInclude Include="src\physSim\spaceObj.hpp" />
+    <ClInclude Include="src\states\state.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

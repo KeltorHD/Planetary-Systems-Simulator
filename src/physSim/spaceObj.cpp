@@ -13,3 +13,8 @@ SpaceObj::SpaceObj(
 	this->shape.setFillColor(this->obj_color);
 	this->shape.setPosition(static_cast<float>(this->x), static_cast<float>(this->y));
 }
+
+double SpaceObj::distance(const SpaceObj& obj) const
+{
+	return std::hypot(this->x - obj.x, this->y - obj.y);
+}
