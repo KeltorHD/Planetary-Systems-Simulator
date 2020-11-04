@@ -17,8 +17,7 @@ public:
 
 	SpaceObj(
 		double mass, double x, double y,
-		double vx, double vy,
-		double ax, double ay,
+		double vx, double vy, const std::string& name,
 		double radius, sf::Color obj_color, obj_t type);
 
 	/*дистанция до другого объекта*/
@@ -26,6 +25,8 @@ public:
 
 	/*дружественный класс для физической симуляции*/
 	friend class PhysSimulation;
+
+	void render(sf::RenderTarget* target);
 	
 private:
 	double mass;			 /*масса*/

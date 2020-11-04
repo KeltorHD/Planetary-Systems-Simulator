@@ -4,7 +4,8 @@
 //Init func
 void MainMenuState::initVariables()
 {
-
+	PhysSimulation ps;
+	ps.loadSystemXml("systems/base.xml");
 }
 
 void MainMenuState::initKeybinds()

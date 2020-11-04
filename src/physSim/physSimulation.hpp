@@ -1,5 +1,6 @@
 #pragma once
 
+#include "tinyxml2.h"
 #include "spaceObj.hpp"
 
 class PhysSimulation
@@ -15,7 +16,7 @@ public:
 	PhysSimulation& operator=(PhysSimulation&&) = delete;
 
 	/*функции*/
-	//void loadSpaceObj()
+	void loadSystemXml(const std::string& path);
 
 	void update(const float& dt);
 	void render(sf::RenderTarget* target);

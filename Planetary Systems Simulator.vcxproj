@@ -120,7 +120,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)external\SFML-2.5.1\include;$(SolutionDir)external\imgui-1.79\;$(SolutionDir)src\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)external\SFML-2.5.1\include;$(SolutionDir)external\imgui-1.79\;$(SolutionDir)src\;$(SolutionDir)external\tinyxml2;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -156,6 +156,7 @@
     <ClCompile Include="external\imgui-1.79\imgui_demo.cpp" />
     <ClCompile Include="external\imgui-1.79\imgui_draw.cpp" />
     <ClCompile Include="external\imgui-1.79\imgui_widgets.cpp" />
+    <ClCompile Include="external\tinyxml2\tinyxml2.cpp" />
     <ClCompile Include="src\physSim\physSimulation.cpp" />
     <ClCompile Include="src\states\mainMenuState\mainMenuState.cpp" />
     <ClCompile Include="src\engine\program.cpp" />
@@ -174,6 +175,7 @@
     <ClInclude Include="external\imgui-1.79\imstb_rectpack.h" />
     <ClInclude Include="external\imgui-1.79\imstb_textedit.h" />
     <ClInclude Include="external\imgui-1.79\imstb_truetype.h" />
+    <ClInclude Include="external\tinyxml2\tinyxml2.h" />
     <ClInclude Include="src\physSim\physSimulation.hpp" />
     <ClInclude Include="src\states\mainMenuState\mainMenuState.hpp" />
     <ClInclude Include="src\engine\program.hpp" />
