@@ -15,17 +15,19 @@ void Program::initGraphicsSettings()
 //Initializer func
 void Program::initWindow()
 {
+	sf::ContextSettings st;
+	st.antialiasingLevel = this->gfxSettings.antialiasingLevel;
 
 	if (this->gfxSettings.fullscreen)
 		this->window = new sf::RenderWindow(
 			this->gfxSettings.resolution,
 			this->gfxSettings.title,
-			sf::Style::Fullscreen);
+			sf::Style::Fullscreen, st);
 	else
 		this->window = new sf::RenderWindow(
 			this->gfxSettings.resolution,
 			this->gfxSettings.title,
-			sf::Style::Titlebar | sf::Style::Close);
+			sf::Style::Titlebar | sf::Style::Close, st);
 
 	ImGui::SFML::Init(*this->window);
 
@@ -107,6 +109,7 @@ void Program::updateDt_ImGui()
 {
 	sf::Time t{ this->dtClock.restart() };
 	this->dt = t.asSeconds();
+	//std::cout << this->dt << std::endl;
 	ImGui::SFML::Update(*this->window, t);
 }
 

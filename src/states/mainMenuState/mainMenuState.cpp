@@ -4,8 +4,7 @@
 //Init func
 void MainMenuState::initVariables()
 {
-	PhysSimulation ps;
-	ps.loadSystemXml("systems/base.xml");
+	simulation.loadSystemXml("systems/base.xml");
 }
 
 void MainMenuState::initKeybinds()
@@ -25,17 +24,11 @@ void MainMenuState::initKeybinds()
 	ifs.close();
 }
 
-void MainMenuState::initGUI()
-{
-	
-}
-
 MainMenuState::MainMenuState(StateData* state_data)
 	: State(state_data)
 {
 	this->initVariables();
 	this->initKeybinds();
-	this->initGUI();
 }
 
 MainMenuState::~MainMenuState()
@@ -77,14 +70,11 @@ void MainMenuState::updateGUI(const float& dt)
 void MainMenuState::update(const float& dt)
 {
 	this->updateMousePositions();
+
+	this->simulation.update(2*dt);
+
 	this->updateInput(dt);
-
 	this->updateGUI(dt);
-}
-
-void MainMenuState::renderGUI(sf::RenderTarget& target)
-{
-	
 }
 
 void MainMenuState::render(sf::RenderTarget* target)
@@ -94,7 +84,6 @@ void MainMenuState::render(sf::RenderTarget* target)
 		target = this->window;
 	}
 
-	this->renderGUI(*target);
-
+	this->simulation.render(target);
 }
 

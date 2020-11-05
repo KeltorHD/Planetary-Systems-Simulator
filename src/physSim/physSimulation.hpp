@@ -24,7 +24,13 @@ public:
 private:
 	std::vector<SpaceObj*> planetsSim;    /*тела, участвующие в симуляции*/
 	std::vector<SpaceObj*> planetsSave;   /*тела, которые хранятся для восстановления исходного состояния*/
+	std::string systemName;               /*имя симулируемой системы*/
 
-	void clear();
+	void clear();  /*очистка текущей системы*/
 
+	double fx(const SpaceObj* obj, double locale_x) const; /*расчет ускорения по x*/
+	double fy(const SpaceObj* obj, double locale_y) const; /*расчет ускорения по y*/
+
+	void calcVxAndX(SpaceObj* obj, const float& dt); /*расчет скорости и координаты по x*/
+	void calcVyAndY(SpaceObj* obj, const float& dt); /*расчет скорости и координаты по y*/
 };

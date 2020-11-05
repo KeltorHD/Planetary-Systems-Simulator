@@ -11,6 +11,7 @@ public:
 	bool fullscreen;
 	bool verticalSync;
 	unsigned framerateLimit;
+	unsigned antialiasingLevel;
 	std::vector<sf::VideoMode> videoModes;
 
 	//func

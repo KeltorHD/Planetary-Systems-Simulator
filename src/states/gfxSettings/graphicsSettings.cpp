@@ -35,6 +35,7 @@ void GraphicsSettings::loadFromFile(const std::string path)
 		ifs >> this->fullscreen;
 		ifs >> this->framerateLimit;
 		ifs >> this->verticalSync;
+		ifs >> this->antialiasingLevel;
 	}
 	ifs.close();
 }

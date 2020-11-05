@@ -19,7 +19,7 @@
 		<name>Earth</name>
 		<type>1</type>
 		<mass>200</mass>
-		<x>130</x>
+		<x>180</x>
 		<y>370</y>
 		<vx>0</vx>
 		<vy>-5</vy>
@@ -34,7 +34,7 @@
 		<name>Moon</name>
 		<type>2</type>
 		<mass>15</mass>
-		<x>110</x>
+		<x>160</x>
 		<y>370</y>
 		<vx>0</vx>
 		<vy>-8</vy>

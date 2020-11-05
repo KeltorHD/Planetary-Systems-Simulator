@@ -18,6 +18,11 @@ double SpaceObj::distance(const SpaceObj& obj) const
 	return std::hypot(this->x - obj.x, this->y - obj.y);
 }
 
+void SpaceObj::update()
+{
+	this->shape.setPosition(static_cast<float>(this->x), static_cast<float>(this->y));
+}
+
 void SpaceObj::render(sf::RenderTarget* target)
 {
 	target->draw(this->shape);

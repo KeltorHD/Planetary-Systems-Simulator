@@ -26,6 +26,8 @@ public:
 	/*дружественный класс для физической симуляции*/
 	friend class PhysSimulation;
 
+	void update();
+
 	void render(sf::RenderTarget* target);
 	
 private:
