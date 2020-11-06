@@ -89,6 +89,7 @@
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)external\SFML-2.5.1\include;$(SolutionDir)external\imgui-1.79;$(SolutionDir)external\tinyxml2;$(SolutionDir)src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -121,6 +122,7 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)external\SFML-2.5.1\include;$(SolutionDir)external\imgui-1.79;$(SolutionDir)external\tinyxml2;$(SolutionDir)src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -157,6 +159,7 @@
     <ClCompile Include="external\imgui-1.79\imgui_draw.cpp" />
     <ClCompile Include="external\imgui-1.79\imgui_widgets.cpp" />
     <ClCompile Include="external\tinyxml2\tinyxml2.cpp" />
+    <ClCompile Include="src\localisation\locale.cpp" />
     <ClCompile Include="src\physSim\physSimulation.cpp" />
     <ClCompile Include="src\states\mainMenuState\mainMenuState.cpp" />
     <ClCompile Include="src\engine\program.cpp" />
@@ -176,6 +179,7 @@
     <ClInclude Include="external\imgui-1.79\imstb_textedit.h" />
     <ClInclude Include="external\imgui-1.79\imstb_truetype.h" />
     <ClInclude Include="external\tinyxml2\tinyxml2.h" />
+    <ClInclude Include="src\localisation\locale.hpp" />
     <ClInclude Include="src\physSim\physSimulation.hpp" />
     <ClInclude Include="src\states\mainMenuState\mainMenuState.hpp" />
     <ClInclude Include="src\engine\program.hpp" />

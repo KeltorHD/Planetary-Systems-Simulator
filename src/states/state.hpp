@@ -1,6 +1,7 @@
 #pragma once
 
 #include "gfxSettings/graphicsSettings.hpp"
+#include "localisation/locale.hpp"
 
 class State;
 
@@ -14,6 +15,7 @@ public:
 	GraphicsSettings* gfxSettings;
 	std::map<std::string, int>* supportedKeys;
 	std::stack<State*>* states;
+	Locale* locale;
 };
 
 class State
@@ -37,6 +39,7 @@ public:
 
 protected:
 	StateData* stateData;
+	Locale* locale;
 	std::stack<State*>* states;
 
 	sf::RenderWindow* window;

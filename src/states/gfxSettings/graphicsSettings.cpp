@@ -3,39 +3,35 @@
 
 GraphicsSettings::GraphicsSettings()
 {
-	this->title = "DEFAULT";
 	this->resolution = sf::VideoMode::getDesktopMode();
 	this->fullscreen = false;
 	this->verticalSync = false;
-	this->framerateLimit = 120;
+	this->framerateLimit = 120u;
+	this->antialiasingLevel = 0u;
 }
 
-void GraphicsSettings::saveToFile(const std::string path)
+void GraphicsSettings::saveXml(const std::string path)
 {
-	std::ofstream ofs(path);
-
-	if (ofs.is_open())
-	{
-		ofs << this->title;
-		ofs << this->resolution.width << " " << this->resolution.height;
-		ofs << this->fullscreen;
-		ofs << this->framerateLimit;
-		ofs << this->verticalSync;
-	}
-	ofs.close();
+	throw "не реализовано";
 }
 
-void GraphicsSettings::loadFromFile(const std::string path)
+void GraphicsSettings::loadXml(const std::string path)
 {
-	std::ifstream ifs(path);
-	if (ifs.is_open())
+	using namespace tinyxml2;
+	XMLDocument file;
+	if (file.LoadFile(path.c_str()) == XMLError::XML_SUCCESS)
 	{
-		std::getline(ifs, this->title);
-		ifs >> this->resolution.width >> this->resolution.height;
-		ifs >> this->fullscreen;
-		ifs >> this->framerateLimit;
-		ifs >> this->verticalSync;
-		ifs >> this->antialiasingLevel;
+		auto ref = file.FirstChildElement("settings");
+		this->resolution.width = ref->FirstChildElement("resolution")->FirstChildElement("width")->UnsignedText();
+		this->resolution.height = ref->FirstChildElement("resolution")->FirstChildElement("height")->UnsignedText();
+		this->fullscreen = ref->FirstChildElement("fullscreen")->BoolText();
+		this->framerateLimit = ref->FirstChildElement("framerate_limit")->UnsignedText();
+		this->verticalSync = ref->FirstChildElement("vertical_sync")->BoolText();
+		this->antialiasingLevel = ref->FirstChildElement("antialiasinc_level")->UnsignedText();
+		this->lang = ref->FirstChildElement("lang")->GetText();
 	}
-	ifs.close();
+	else
+	{
+		throw "NOT LOAD LOCALE FILE " + path;
+	}
 }

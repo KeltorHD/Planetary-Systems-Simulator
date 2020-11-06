@@ -5,6 +5,7 @@
 void MainMenuState::initVariables()
 {
 	simulation.loadSystemXml("systems/base.xml");
+	this->isSettings = false;
 }
 
 void MainMenuState::initKeybinds()
@@ -45,26 +46,79 @@ void MainMenuState::updateInput(const float& dt)
 	}
 }
 
+namespace ImGui
+{
+	static auto vector_getter = [](void* vec, int idx, const char** out_text)
+	{
+		auto& vector = *static_cast<std::vector<std::string>*>(vec);
+		if (idx < 0 || idx >= static_cast<int>(vector.size())) { return false; }
+		*out_text = vector.at(idx).c_str();
+		return true;
+	};
+
+	bool Combo(const char* label, int* currIndex, std::vector<std::string>& values)
+	{
+		if (values.empty()) { return false; }
+		return Combo(label, currIndex, vector_getter,
+			static_cast<void*>(&values), values.size());
+	}
+
+	bool ListBox(const char* label, int* currIndex, std::vector<std::string>& values)
+	{
+		if (values.empty()) { return false; }
+		return ListBox(label, currIndex, vector_getter,
+			static_cast<void*>(&values), values.size());
+	}
+
+}
+
 void MainMenuState::updateGUI(const float& dt)
 {
 	sf::VideoMode vm{ this->stateData->gfxSettings->resolution };
 	float width{ 250.f + vm.width / 20.f};
 	float height{ 200.f };
 
-	ImGui::Begin("Planetary Systems Simulator"); // создаём окно
+	ImGui::PushFont(ImGui::GetIO().Fonts->Fonts[1]);
+
+	ImGui::Begin(this->locale->get_c("program_title")); // создаём окно
 	ImGui::SetWindowSize(sf::Vector2f(width, height));
 
-	if (ImGui::Button("Simulation"))
+	if (ImGui::Button(this->locale->get_c("simulation")))
 	{
 		std::cout << "call sim" << std::endl;
 	}
 
-	if (ImGui::Button("Quit"))
+	if (ImGui::Button(this->locale->get_c("settings")))
+	{
+		this->isSettings = true;
+	}
+
+	if (ImGui::Button(this->locale->get_c("quit")))
 	{
 		this->endState();
 	}
 	
 	ImGui::End(); // end window
+
+	//if (isSettings)
+	//{
+	//	int selectedItem{ 0 };
+	//	std::vector<std::string> lang;
+	//	for (const auto& entry : std::filesystem::directory_iterator("lang/"))
+	//		lang.push_back(entry.path().string());
+
+	//	
+
+	//	ImGui::BeginPopup("Settings"); // создаём окно
+
+
+	//	ImGui::Combo("lang", &selectedItem, lang);
+
+
+	//	ImGui::EndPopup();
+	//}
+
+	ImGui::PopFont();
 }
 
 void MainMenuState::update(const float& dt)

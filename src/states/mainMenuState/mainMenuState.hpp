@@ -14,6 +14,7 @@ public:
 
 private:
 	PhysSimulation simulation;
+	bool isSettings;
 
 	void initVariables();
 	void initKeybinds();

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<settings>
+	<resolution>
+		<width>1000</width>
+		<height>740</height>
+	</resolution>
+	<fullscreen>0</fullscreen>
+	<framerate_limit>120</framerate_limit>
+	<vertical_sync>0</vertical_sync>
+	<antialiasinc_level>8</antialiasinc_level>
+	<lang>en</lang>
+</settings>

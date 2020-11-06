@@ -7,11 +7,13 @@ StateData::StateData()
 	this->states = nullptr;
 	this->supportedKeys = nullptr;
 	this->window = nullptr;
+	this->locale = nullptr;
 }
 
 State::State(StateData* state_data)
 {
 	this->stateData = state_data;
+	this->locale = state_data->locale;
 	this->window = state_data->window;
 	this->supportedKeys = state_data->supportedKeys;
 	this->states = state_data->states;

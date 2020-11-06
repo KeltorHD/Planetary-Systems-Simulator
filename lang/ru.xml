@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<text>
+  <program_title>Симулятор планетарных систем</program_title>
+  <menu>
+    <simulation>Симуляция</simulation>
+    <settings>Настройки</settings>
+    <quit>Выйти</quit>
+  </menu>
+  <simulation>
+    
+  </simulation>
+</text>

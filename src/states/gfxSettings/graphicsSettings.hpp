@@ -1,20 +1,22 @@
 #pragma once
 
+#include "tinyxml2.h"
+
 class GraphicsSettings
 {
 public:
 	GraphicsSettings();
 
 	//variables
-	std::string title;
 	sf::VideoMode resolution;
 	bool fullscreen;
 	bool verticalSync;
 	unsigned framerateLimit;
 	unsigned antialiasingLevel;
 	std::vector<sf::VideoMode> videoModes;
+	std::string lang;
 
 	//func
-	void saveToFile(const std::string path);
-	void loadFromFile(const std::string path);
+	void saveXml(const std::string path);
+	void loadXml(const std::string path);
 };

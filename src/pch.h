@@ -12,6 +12,9 @@
 #include <stack>
 #include <map>
 #include <cmath>
+#include <unordered_map>
+#include <codecvt>
+#include <filesystem>
 
 /*SFML*/
 #include <SFML/Graphics.hpp>

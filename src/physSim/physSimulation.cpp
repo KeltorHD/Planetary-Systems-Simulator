@@ -28,7 +28,7 @@ void PhysSimulation::loadSystemXml(const std::string& path)
 			this->planetsSim.push_back(tmp);
 			this->planetsSave.push_back(new SpaceObj(*tmp));
 		}
-		std::copy(path.begin() + path.find_last_of('/') + 1, path.end() - 4, this->systemName.begin());
+		this->systemName = { path.substr(path.find_last_of('/') + 1, path.size() - path.find_last_of('/') - 5) };
 	}
 	else
 	{
@@ -40,7 +40,7 @@ void PhysSimulation::update(const float& dt)
 {
 	for (size_t i = 0; i < 5/*magic*/; i++)
 	{
-		for (size_t j = 0; j < this->planetsSim.size(); j++) /*вычисление x, y, vx, vy для каждой планеты*/
+		for (size_t j = 0; j < this->planetsSim.size(); j++) /*РІС‹С‡РёСЃР»РµРЅРёРµ x, y, vx, vy РґР»СЏ РєР°Р¶РґРѕР№ РїР»Р°РЅРµС‚С‹*/
 		{
 			this->calcVxAndX(this->planetsSim[j], dt);
 			this->calcVyAndY(this->planetsSim[j], dt);
@@ -78,7 +78,7 @@ double PhysSimulation::fx(const SpaceObj* obj, double locale_x) const
 	double a{};
 	for (size_t i = 0; i < this->planetsSim.size(); i++)
 	{
-		if (obj == this->planetsSim[i]) continue; /*если встречаем сами себя*/
+		if (obj == this->planetsSim[i]) continue; /*РµСЃР»Рё РІСЃС‚СЂРµС‡Р°РµРј СЃР°РјРё СЃРµР±СЏ*/
 
 		double r{ std::hypot(this->planetsSim[i]->x - locale_x, this->planetsSim[i]->y - obj->y) };
 		a += this->planetsSim[i]->mass * (this->planetsSim[i]->x - locale_x) / std::pow(r, 3.);
@@ -91,7 +91,7 @@ double PhysSimulation::fy(const SpaceObj* obj, double locale_y) const
 	double a{};
 	for (size_t i = 0; i < this->planetsSim.size(); i++)
 	{
-		if (obj == this->planetsSim[i]) continue; /*если встречаем сами себя*/
+		if (obj == this->planetsSim[i]) continue; /*РµСЃР»Рё РІСЃС‚СЂРµС‡Р°РµРј СЃР°РјРё СЃРµР±СЏ*/
 
 		double r{ std::hypot(this->planetsSim[i]->x - obj->x, this->planetsSim[i]->y - locale_y) };
 		a += this->planetsSim[i]->mass * (this->planetsSim[i]->y - locale_y) / std::pow(r, 3.);

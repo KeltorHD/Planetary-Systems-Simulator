@@ -9,7 +9,7 @@ void Program::initVariables()
 
 void Program::initGraphicsSettings()
 {
-	this->gfxSettings.loadFromFile("config/graphics.ini");
+	this->gfxSettings.loadXml("config/settings.xml");
 }
 
 //Initializer func
@@ -18,21 +18,34 @@ void Program::initWindow()
 	sf::ContextSettings st;
 	st.antialiasingLevel = this->gfxSettings.antialiasingLevel;
 
+	sf::String title = sf::String::fromUtf8
+	(
+		this->stateData.locale->get_s("program_title").begin(), 
+		this->stateData.locale->get_s("program_title").end()
+	);
+
+
 	if (this->gfxSettings.fullscreen)
 		this->window = new sf::RenderWindow(
 			this->gfxSettings.resolution,
-			this->gfxSettings.title,
+			title,
 			sf::Style::Fullscreen, st);
 	else
 		this->window = new sf::RenderWindow(
 			this->gfxSettings.resolution,
-			this->gfxSettings.title,
+			title,
 			sf::Style::Titlebar | sf::Style::Close, st);
 
 	ImGui::SFML::Init(*this->window);
+	
+	ImGuiIO& io = ImGui::GetIO();
+	auto f = io.Fonts->AddFontFromFileTTF("font/GoogleSans-Regular.ttf", 18.0f, nullptr, io.Fonts->GetGlyphRangesCyrillic());
+	ImGui::SFML::UpdateFontTexture();
 
 	this->window->setFramerateLimit(this->gfxSettings.framerateLimit);
 	this->window->setVerticalSyncEnabled(this->gfxSettings.verticalSync);
+
+	this->stateData.window = this->window; /*связываем окно в program с stateData*/
 }
 
 void Program::initKeys()
@@ -60,10 +73,10 @@ void Program::initKeys()
 
 void Program::initStateData()
 {
-	this->stateData.window = this->window;
 	this->stateData.gfxSettings = &this->gfxSettings;
 	this->stateData.supportedKeys = &this->supportedKeys;
 	this->stateData.states = &this->states;
+	this->stateData.locale = new Locale("lang/" + this->gfxSettings.lang + ".xml");
 }
 
 void Program::initStates()
@@ -79,9 +92,9 @@ Program::Program()
 {
 	this->initVariables();
 	this->initGraphicsSettings();
+	this->initStateData();
 	this->initWindow();
 	this->initKeys();
-	this->initStateData();
 	this->initStates();
 }
 
@@ -92,6 +105,8 @@ Program::~Program()
 		delete this->states.top();
 		this->states.pop();
 	}
+
+	delete this->stateData.locale;
 
 	delete this->window;
 }

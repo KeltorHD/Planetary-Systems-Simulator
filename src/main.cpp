@@ -3,6 +3,8 @@
 
 int main()
 {
+    system("chcp 65001>nul");
+
     Program pr;
 
     pr.run();
