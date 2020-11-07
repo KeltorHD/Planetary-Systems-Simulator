@@ -6,9 +6,9 @@ Locale::Locale(const std::string& path)
 	this->load(path, this->locale);
 
 	/*текущая локализация*/
-	this->lang = {path.substr(path.find_last_of('/') + 1, path.size() - path.find_last_of('/') - 5)};
+	this->lang = { path.substr(path.find_last_of('/') + 1, path.size() - path.find_last_of('/') - 5) };
 
-	if (this->lang != "en") /*загрузка английской локализации*/
+	if (this->lang != "en") /*если выбран не английский язык*/
 	{
 		this->load(path.substr(0, path.length() - 4 - this->lang.length()) + "en.xml",  this->en);
 	}
@@ -25,6 +25,11 @@ void Locale::loadLocaleXml(const std::string& path)
 	{
 		this->load(path.substr(0, path.length() - 4 - this->lang.length()) + "en.xml", this->en);
 	}
+}
+
+const std::string& Locale::get_lang() const
+{
+	return this->lang;
 }
 
 const std::string& Locale::get_s(const std::string& to_locale) const

@@ -5,6 +5,10 @@
     <simulation>Simulation</simulation>
     <settings>Settings</settings>
     <quit>Quit</quit>
+    <settings>Settings</settings>
+    <lang>Language</lang>
+    <save>Save</save>
+    <fullscreen>Fullscreen</fullscreen>
   </menu>
   <simulation>
     

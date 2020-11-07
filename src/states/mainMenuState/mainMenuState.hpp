@@ -14,7 +14,11 @@ public:
 
 private:
 	PhysSimulation simulation;
+
+	/*переменные для настроек*/
 	bool isSettings;
+	char** lang;
+	size_t lang_length;
 
 	void initVariables();
 	void initKeybinds();

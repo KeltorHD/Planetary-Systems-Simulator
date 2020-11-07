@@ -10,6 +10,8 @@ public:
 	/*функции*/
 	void loadLocaleXml(const std::string& path); /*очистка локализации и загрузка новой*/
 
+	const std::string& get_lang() const;
+
 	const char* get_c(const std::string& to_locale) const;
 	const std::string& get_s(const std::string& to_locale) const;
 

@@ -6,6 +6,24 @@ void MainMenuState::initVariables()
 {
 	simulation.loadSystemXml("systems/base.xml");
 	this->isSettings = false;
+
+	std::vector<std::string> v;
+	for (const auto& entry : std::filesystem::directory_iterator("lang/"))
+	{
+		std::string tmp = entry.path().string().substr
+		(
+			entry.path().string().find_last_of('/') + 1, entry.path().string().size() - entry.path().string().find_last_of('/') - 5
+		);
+		v.push_back(tmp);
+	}
+	this->lang_length = v.size();
+	this->lang = new char* [this->lang_length];
+	for (size_t i = 0; i < this->lang_length; i++)
+	{
+		this->lang[i] = new char[v[i].length() + 1];
+		std::copy(v[i].begin(), v[i].end(), this->lang[i]);
+		this->lang[i][v[i].length()] = 0;
+	}
 }
 
 void MainMenuState::initKeybinds()
@@ -34,7 +52,11 @@ MainMenuState::MainMenuState(StateData* state_data)
 
 MainMenuState::~MainMenuState()
 {
-	
+	for (size_t i = 0; i < this->lang_length; i++)
+	{
+		delete[] this->lang[i];
+	}
+	delete[] this->lang;
 }
 
 
@@ -46,42 +68,12 @@ void MainMenuState::updateInput(const float& dt)
 	}
 }
 
-namespace ImGui
-{
-	static auto vector_getter = [](void* vec, int idx, const char** out_text)
-	{
-		auto& vector = *static_cast<std::vector<std::string>*>(vec);
-		if (idx < 0 || idx >= static_cast<int>(vector.size())) { return false; }
-		*out_text = vector.at(idx).c_str();
-		return true;
-	};
-
-	bool Combo(const char* label, int* currIndex, std::vector<std::string>& values)
-	{
-		if (values.empty()) { return false; }
-		return Combo(label, currIndex, vector_getter,
-			static_cast<void*>(&values), values.size());
-	}
-
-	bool ListBox(const char* label, int* currIndex, std::vector<std::string>& values)
-	{
-		if (values.empty()) { return false; }
-		return ListBox(label, currIndex, vector_getter,
-			static_cast<void*>(&values), values.size());
-	}
-
-}
-
 void MainMenuState::updateGUI(const float& dt)
 {
-	sf::VideoMode vm{ this->stateData->gfxSettings->resolution };
-	float width{ 250.f + vm.width / 20.f};
-	float height{ 200.f };
-
 	ImGui::PushFont(ImGui::GetIO().Fonts->Fonts[1]);
 
-	ImGui::Begin(this->locale->get_c("program_title")); // создаём окно
-	ImGui::SetWindowSize(sf::Vector2f(width, height));
+	/*главное меню*/
+	ImGui::Begin(this->locale->get_c("program_title"));
 
 	if (ImGui::Button(this->locale->get_c("simulation")))
 	{
@@ -97,26 +89,57 @@ void MainMenuState::updateGUI(const float& dt)
 	{
 		this->endState();
 	}
+	ImGui::Text("FPS: %.1f", ImGui::GetIO().Framerate);
 	
-	ImGui::End(); // end window
+	ImGui::End();
+	/*конец главного меню*/
 
-	//if (isSettings)
-	//{
-	//	int selectedItem{ 0 };
-	//	std::vector<std::string> lang;
-	//	for (const auto& entry : std::filesystem::directory_iterator("lang/"))
-	//		lang.push_back(entry.path().string());
+	
+	/*Настройки*/
+	if (this->isSettings)
+	{
+		static int selectedItem{ 0 };
+		static bool fullscreen{ false };
 
-	//	
+		ImGui::Begin(this->locale->get_c("settings"), &this->isSettings); // создаём окно
 
-	//	ImGui::BeginPopup("Settings"); // создаём окно
+		ImGui::Combo(this->locale->get_c("lang"), &selectedItem, this->lang, this->lang_length);
 
+		ImGui::Checkbox(this->locale->get_c("fullscreen"), &fullscreen);
 
-	//	ImGui::Combo("lang", &selectedItem, lang);
+		if (ImGui::Button(this->locale->get_c("save")))
+		{
+			if (std::string(this->lang[selectedItem]) != this->locale->get_lang())
+			{
+				this->locale->loadLocaleXml(std::string("lang/") + this->lang[selectedItem] + ".xml");
+			}
+			if (fullscreen != this->stateData->gfxSettings->fullscreen)
+			{
+				sf::String title = sf::String::fromUtf8
+				(
+					this->stateData->locale->get_s("program_title").begin(),
+					this->stateData->locale->get_s("program_title").end()
+				);
+				sf::ContextSettings st;
+				st.antialiasingLevel = this->stateData->gfxSettings->antialiasingLevel;
+				this->window->close();
+				if (fullscreen)
+					this->window->create
+					(
+						sf::VideoMode::getFullscreenModes()[0], title, sf::Style::Fullscreen, st
+					);
+				else
+					this->window->create
+					(
+						this->stateData->gfxSettings->resolution, title, sf::Style::Titlebar | sf::Style::Close, st
+					);
+				this->stateData->gfxSettings->fullscreen = fullscreen;
+			}
+		}
 
-
-	//	ImGui::EndPopup();
-	//}
+		ImGui::End();
+	}
+	/*конец настроек*/
 
 	ImGui::PopFont();
 }

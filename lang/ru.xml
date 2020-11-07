@@ -5,6 +5,10 @@
     <simulation>Симуляция</simulation>
     <settings>Настройки</settings>
     <quit>Выйти</quit>
+    <settings>Настройки</settings>
+    <lang>Язык</lang>
+    <save>Сохранить</save>
+    <fullscreen>Полноэкранный режим</fullscreen>
   </menu>
   <simulation>
     
