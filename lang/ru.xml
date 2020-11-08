@@ -12,6 +12,12 @@
     <resolution>Разрешение</resolution>
   </menu>
   <simulation>
-    
+    <help>Помощь</help>
+    <move_up>Переместить камеру вверх: W</move_up>
+    <move_down>Переместить камеру вниз: S</move_down>
+    <move_left>Переместить камеру влево: A</move_left>
+    <move_right>Переместить камеру вправо: D</move_right>
+    <move_scroll_up>Увеличить пространство: +</move_scroll_up>
+    <move_scroll_down>Уменьшить пространство: -</move_scroll_down>
   </simulation>
 </text>

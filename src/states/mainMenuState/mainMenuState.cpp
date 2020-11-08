@@ -91,9 +91,9 @@ MainMenuState::~MainMenuState()
 
 void MainMenuState::updateInput(const float& dt)
 {
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(this->keybinds.at("CLOSE"))))
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(this->keybinds.at("RELOAD"))))
 	{
-		this->endState();
+		this->simulation.restoreInitialState();
 	}
 }
 
@@ -106,7 +106,7 @@ void MainMenuState::updateGUI()
 
 	if (ImGui::Button(this->locale->get_c("simulation")))
 	{
-		std::cout << "call sim" << std::endl;
+		this->states->push(new SimulationState(this->stateData));
 	}
 
 	if (ImGui::Button(this->locale->get_c("settings")))
@@ -165,17 +165,12 @@ void MainMenuState::updateSettingsGUI()
 			this->locale->loadLocaleXml(std::string("lang/") + this->langs[selected_lang] + ".xml");
 			this->stateData->gfxSettings->lang = this->langs[selected_lang];
 		}
-		if (this->stateData->gfxSettings->videoModes[selected_resolution] != this->stateData->gfxSettings->resolution) /*изменение разрешения*/
+		if (fullscreen != this->stateData->gfxSettings->fullscreen
+			|| this->stateData->gfxSettings->videoModes[selected_resolution] != this->stateData->gfxSettings->resolution) /*полноэкранный режим или изменение разрешения*/
 		{
-			this->window->setSize
-			(
-				sf::Vector2u(this->stateData->gfxSettings->videoModes[selected_resolution].width,
-					this->stateData->gfxSettings->videoModes[selected_resolution].height)
-			);
 			this->stateData->gfxSettings->resolution = this->stateData->gfxSettings->videoModes[selected_resolution];
-		}
-		if (fullscreen != this->stateData->gfxSettings->fullscreen) /*полноэкранный режим*/
-		{
+			this->stateData->gfxSettings->fullscreen = fullscreen;
+
 			sf::String title = sf::String::fromUtf8
 			(
 				this->stateData->locale->get_s("program_title").begin(),
@@ -187,14 +182,13 @@ void MainMenuState::updateSettingsGUI()
 			if (fullscreen)
 				this->window->create
 				(
-					this->stateData->gfxSettings->resolution/*sf::VideoMode::getFullscreenModes()[0]*/, title, sf::Style::Fullscreen, st
+					this->stateData->gfxSettings->resolution, title, sf::Style::Fullscreen, st
 				);
 			else
 				this->window->create
 				(
 					this->stateData->gfxSettings->resolution, title, sf::Style::Titlebar | sf::Style::Close, st
 				);
-			this->stateData->gfxSettings->fullscreen = fullscreen;
 		}
 
 		this->camera.setSize /*изменяем камеру*/
@@ -210,8 +204,6 @@ void MainMenuState::updateSettingsGUI()
 
 void MainMenuState::update(const float& dt)
 {
-	this->updateMousePositions();
-
 	this->simulation.update(2*dt);
 
 	this->updateInput(dt);

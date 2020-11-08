@@ -167,6 +167,7 @@
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\pch.cpp" />
     <ClCompile Include="src\physSim\spaceObj.cpp" />
+    <ClCompile Include="src\states\simulationState\simulationState.cpp" />
     <ClCompile Include="src\states\state.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -186,6 +187,7 @@
     <ClInclude Include="src\states\gfxSettings\graphicsSettings.hpp" />
     <ClInclude Include="src\pch.h" />
     <ClInclude Include="src\physSim\spaceObj.hpp" />
+    <ClInclude Include="src\states\simulationState\simulationState.hpp" />
     <ClInclude Include="src\states\state.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

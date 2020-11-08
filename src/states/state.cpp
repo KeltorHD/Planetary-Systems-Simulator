@@ -47,15 +47,3 @@ void State::unpauseState()
 {
 	this->paused = false;
 }
-
-void State::updateMousePositions(sf::View* view)
-{
-	this->mousePosScreen = sf::Mouse::getPosition();
-	this->mousePosWindow = sf::Mouse::getPosition(*this->window);
-
-	if (view)
-		this->window->setView(*view);
-	this->mousePosView = this->window->mapPixelToCoords(sf::Mouse::getPosition(*this->window));
-
-	this->window->setView(this->window->getDefaultView());
-}

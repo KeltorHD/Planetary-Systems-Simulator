@@ -12,6 +12,12 @@
     <resolution>Resolution</resolution>
   </menu>
   <simulation>
-    
+    <help>Help</help>
+    <move_up>Move camera up: W</move_up>
+    <move_down>Move camera down: S</move_down>
+    <move_left>Move camera left: A</move_left>
+    <move_right>Move camera right: D</move_right>
+    <move_scroll_up>Scroll camera up: +</move_scroll_up>
+    <move_scroll_down>Scroll camera down: -</move_scroll_down>
   </simulation>
 </text>

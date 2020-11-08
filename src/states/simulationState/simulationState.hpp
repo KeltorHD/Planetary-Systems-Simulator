@@ -2,14 +2,16 @@
 
 #include "states/state.hpp"
 #include "physSim/physSimulation.hpp"
-#include "states/simulationState/simulationState.hpp"
 
-class MainMenuState :
+static const int camera_move = 80;
+static const float camera_scroll = 0.004f;
+
+class SimulationState :
 	public State
 {
 public:
-	MainMenuState(StateData* state_data);
-	virtual ~MainMenuState();
+	SimulationState(StateData* state_data);
+	virtual ~SimulationState();
 
 	void render(sf::RenderTarget* target = nullptr);
 
@@ -17,19 +19,11 @@ private:
 	PhysSimulation simulation;
 	sf::View camera;
 
-	/*переменные для настроек*/
-	bool isSettings;
-	char** langs;
-	size_t langs_length;
-	char** vmodes;
-	size_t vmodes_length;
-
 	void initVariables();
 	void initKeybinds();
 
 	//func
 	void updateInput(const float& dt);
 	void updateGUI();
-	void updateSettingsGUI();
 	void update(const float& dt);
 };

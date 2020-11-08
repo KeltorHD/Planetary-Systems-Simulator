@@ -5,9 +5,16 @@ int main()
 {
     system("chcp 65001>nul");
 
-    Program pr;
+    try
+    {
+        Program pr;
 
-    pr.run();
+        pr.run();
+    }
+    catch (std::string e)
+    {
+        std::cerr << e << std::endl;
+    }
 
     return 1;
 }

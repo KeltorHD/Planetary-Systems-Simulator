@@ -32,7 +32,6 @@ public:
 	void pauseState();
 	void unpauseState();
 
-	virtual void updateMousePositions(sf::View* view = nullptr);
 	virtual void updateInput(const float& dt) = 0;
 	virtual void update(const float& dt) = 0;
 	virtual void render(sf::RenderTarget* target = nullptr) = 0;
@@ -47,10 +46,6 @@ protected:
 	std::map<std::string, int> keybinds;
 	bool quit;
 	bool paused;
-
-	sf::Vector2i mousePosScreen;
-	sf::Vector2i mousePosWindow;
-	sf::Vector2f mousePosView;
 
 	//Resources
 	std::map<std::string, sf::Texture> textures;

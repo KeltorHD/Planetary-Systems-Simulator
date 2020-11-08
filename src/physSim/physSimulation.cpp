@@ -28,12 +28,91 @@ void PhysSimulation::loadSystemXml(const std::string& path)
 			this->planetsSim.push_back(tmp);
 			this->planetsSave.push_back(new SpaceObj(*tmp));
 		}
-		this->systemName = { path.substr(path.find_last_of('/') + 1, path.size() - path.find_last_of('/') - 5) };
+		this->systemName = { sys.FirstChildElement("system")->FirstChildElement("system_name")->GetText() };
+		this->systemDescription = { sys.FirstChildElement("system")->FirstChildElement("description")->GetText() };
 	}
 	else
 	{
 		throw "NOT LOAD FILE " + path;
 	}
+}
+
+void PhysSimulation::saveSystemXml(const std::string& path) const
+{
+	using namespace tinyxml2;
+	XMLDocument sys;
+	
+	sys.Clear();
+	auto decl = sys.NewDeclaration();
+	sys.InsertEndChild(decl);
+
+	auto system = sys.NewElement("system");
+	auto system_name = sys.NewElement("system_name");
+	system_name->SetText(this->systemName.c_str());
+	system->InsertEndChild(system_name);
+	auto description = sys.NewElement("description");
+	description->SetText(this->systemDescription.c_str());
+	system->InsertEndChild(description);
+
+	for (size_t i = 0; i < this->planetsSave.size(); i++)
+	{
+		auto obj = sys.NewElement("object");
+
+		auto name = sys.NewElement("name");
+		name->SetText(this->planetsSave[i]->name.c_str());
+		obj->InsertEndChild(name);
+
+		auto type = sys.NewElement("type");
+		type->SetText(static_cast<int>(this->planetsSave[i]->type));
+		obj->InsertEndChild(type);
+
+		auto mass = sys.NewElement("mass");
+		mass->SetText(this->planetsSave[i]->mass);
+		obj->InsertEndChild(mass);
+
+		auto x = sys.NewElement("x");
+		x->SetText(this->planetsSave[i]->x);
+		obj->InsertEndChild(x);
+
+		auto y = sys.NewElement("y");
+		y->SetText(this->planetsSave[i]->y);
+		obj->InsertEndChild(y);
+
+		auto vx = sys.NewElement("vx");
+		vx->SetText(this->planetsSave[i]->vx);
+		obj->InsertEndChild(vx);
+
+		auto vy = sys.NewElement("vy");
+		vy->SetText(this->planetsSave[i]->vy);
+		obj->InsertEndChild(vy);
+
+		auto radius = sys.NewElement("r");
+		radius->SetText(this->planetsSave[i]->radius);
+		obj->InsertEndChild(radius);
+
+		auto color = sys.NewElement("color");
+
+		auto r = sys.NewElement("r");
+		r->SetText(this->planetsSave[i]->obj_color.r);
+		color->InsertEndChild(r);
+
+		auto g = sys.NewElement("g");
+		g->SetText(this->planetsSave[i]->obj_color.g);
+		color->InsertEndChild(g);
+
+		auto b = sys.NewElement("b");
+		b->SetText(this->planetsSave[i]->obj_color.b);
+		color->InsertEndChild(b);
+
+		obj->InsertEndChild(color);
+
+		system->InsertEndChild(obj);
+	}
+
+	sys.InsertEndChild(system);
+
+	if (sys.SaveFile(path.c_str()) != XML_SUCCESS)
+		throw "NOT LOAD FILE " + path;
 }
 
 sf::Vector2f PhysSimulation::getMaxMassCoord() const
@@ -48,6 +127,19 @@ sf::Vector2f PhysSimulation::getMaxMassCoord() const
 		);
 	}
 	return sf::Vector2f();
+}
+
+void PhysSimulation::restoreInitialState()
+{
+	for (size_t i = 0; i < this->planetsSim.size(); i++)
+	{
+		delete this->planetsSim[i];
+	}
+	this->planetsSim.clear();
+	for (size_t i = 0; i < this->planetsSave.size(); i++)
+	{
+		this->planetsSim.push_back(new SpaceObj(*this->planetsSave[i]));
+	}
 }
 
 void PhysSimulation::update(const float& dt)
