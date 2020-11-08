@@ -36,6 +36,20 @@ void PhysSimulation::loadSystemXml(const std::string& path)
 	}
 }
 
+sf::Vector2f PhysSimulation::getMaxMassCoord() const
+{
+	size_t i = std::distance(this->planetsSim.begin(), std::max_element(this->planetsSim.begin(), this->planetsSim.end(), [](const SpaceObj* o1, const SpaceObj* o2) {return o1->mass <= o2->mass; }));
+	if (i != this->planetsSim.size())
+	{
+		return sf::Vector2f
+		(
+			static_cast<float>(this->planetsSim[i]->x),
+			static_cast<float>(this->planetsSim[i]->y)
+		);
+	}
+	return sf::Vector2f();
+}
+
 void PhysSimulation::update(const float& dt)
 {
 	for (size_t i = 0; i < 5/*magic*/; i++)

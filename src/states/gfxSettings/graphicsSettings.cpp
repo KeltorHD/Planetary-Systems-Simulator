@@ -5,6 +5,7 @@ GraphicsSettings::GraphicsSettings()
 {
 	this->resolution = sf::VideoMode::getDesktopMode();
 	this->fullscreen = false;
+	this->videoModes = sf::VideoMode::getFullscreenModes();
 	this->verticalSync = false;
 	this->framerateLimit = 120u;
 	this->antialiasingLevel = 0u;
@@ -12,7 +13,24 @@ GraphicsSettings::GraphicsSettings()
 
 void GraphicsSettings::saveXml(const std::string path)
 {
-	throw "не реализовано";
+	using namespace tinyxml2;
+	XMLDocument file;
+	if (file.LoadFile(path.c_str()) == XMLError::XML_SUCCESS)
+	{
+		auto ref = file.FirstChildElement("settings");
+		ref->FirstChildElement("resolution")->FirstChildElement("width")->SetText(this->resolution.width);
+		ref->FirstChildElement("resolution")->FirstChildElement("height")->SetText(this->resolution.height);
+		ref->FirstChildElement("fullscreen")->SetText(this->fullscreen);
+		ref->FirstChildElement("framerate_limit")->SetText(this->framerateLimit);
+		ref->FirstChildElement("vertical_sync")->SetText(this->verticalSync);
+		ref->FirstChildElement("antialiasinc_level")->SetText(this->antialiasingLevel);
+		ref->FirstChildElement("lang")->SetText(this->lang.c_str());
+		file.SaveFile(path.c_str());
+	}
+	else
+	{
+		throw "NOT LOAD LOCALE FILE " + path;
+	}
 }
 
 void GraphicsSettings::loadXml(const std::string path)

@@ -14,18 +14,22 @@ public:
 
 private:
 	PhysSimulation simulation;
+	sf::View camera;
 
-	/*переменные для настроек*/
+	/*РїРµСЂРµРјРµРЅРЅС‹Рµ РґР»СЏ РЅР°СЃС‚СЂРѕРµРє*/
 	bool isSettings;
-	char** lang;
-	size_t lang_length;
+	char** langs;
+	size_t langs_length;
+	char** vmodes;
+	size_t vmodes_length;
 
 	void initVariables();
 	void initKeybinds();
 
 	//func
 	void updateInput(const float& dt);
-	void updateGUI(const float& dt);
+	void updateGUI();
+	void updateSettingsGUI();
 	void update(const float& dt);
 };
 

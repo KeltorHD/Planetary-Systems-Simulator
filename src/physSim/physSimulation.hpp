@@ -18,6 +18,8 @@ public:
 	/*функции*/
 	void loadSystemXml(const std::string& path);
 
+	sf::Vector2f getMaxMassCoord() const;
+
 	void update(const float& dt);
 	void render(sf::RenderTarget* target);
 
