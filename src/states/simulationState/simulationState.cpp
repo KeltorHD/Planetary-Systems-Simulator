@@ -4,7 +4,9 @@
 //Init func
 void SimulationState::initVariables()
 {
-	simulation.loadSystemXml("systems/base.xml");
+	this->simulation.loadDemoSystem();
+	this->ctrl = control_t::paused;
+	this->enableControlSimulation = true;
 
 	this->camera.setSize
 	(
@@ -48,6 +50,7 @@ void SimulationState::updateInput(const float& dt)
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(this->keybinds.at("RELOAD"))))
 	{
 		this->simulation.restoreInitialState();
+		this->ctrl = control_t::paused;
 	}
 
 	/*camera move update*/
@@ -94,8 +97,20 @@ void SimulationState::updateInput(const float& dt)
 
 void SimulationState::updateGUI()
 {
-	ImGui::PushFont(ImGui::GetIO().Fonts->Fonts[1]);
+	ImGui::PushFont(ImGui::GetIO().Fonts->Fonts[ImGui::GetIO().Fonts->Fonts.size() - 1]);
 
+	/*отрисовка меню вверху экрана*/
+	this->updateMainMenuBar();
+
+	/*отрисовка меню управления симуляцией*/
+	this->updateControlSim();
+
+	ImGui::PopFont();
+}
+
+void SimulationState::updateMainMenuBar()
+{
+	/*отрисовка меню вверху экрана*/
 	if (ImGui::BeginMainMenuBar())
 	{
 		if (ImGui::BeginMenu(this->locale->get_c("help")))
@@ -110,13 +125,30 @@ void SimulationState::updateGUI()
 		}
 		ImGui::EndMainMenuBar();
 	}
+	/*конец отрисовки меню вверху экрана*/
+}
 
-	ImGui::PopFont();
+void SimulationState::updateControlSim()
+{
+	/*Контролирование процессом симуляции*/
+	if (this->enableControlSimulation)
+	{
+		ImGui::Begin(this->locale->get_c("control_simulation"), &this->enableControlSimulation);
+		
+		ImGui::Columns(3, "control", false);  // 3-ways, no border
+		ImGui::Separator();
+		
+		//ImGui::Button(this->locale)
+
+		ImGui::End();
+	}
+	/*конец контролирования процессом симуляции*/
 }
 
 void SimulationState::update(const float& dt)
 {
-	this->simulation.update(2 * dt);
+	if (this->ctrl != control_t::paused)
+		this->simulation.update(2 * dt);
 
 	this->updateInput(dt);
 	this->updateGUI();

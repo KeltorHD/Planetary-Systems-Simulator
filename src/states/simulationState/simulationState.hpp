@@ -16,8 +16,19 @@ public:
 	void render(sf::RenderTarget* target = nullptr);
 
 private:
+	enum class control_t
+	{
+		paused,
+		play,
+		play_koef
+	};
 	PhysSimulation simulation;
 	sf::View camera;
+	control_t ctrl;              /*управление симул€цией: пауза, симул€ци€, симул€ци€ с ускорением/замедлением*/
+	float koef;                  /*коэффициент ускорени€/замедлени€*/
+
+	/*дл€ GUI*/
+	bool enableControlSimulation;
 
 	void initVariables();
 	void initKeybinds();
@@ -25,5 +36,7 @@ private:
 	//func
 	void updateInput(const float& dt);
 	void updateGUI();
+	void updateMainMenuBar();
+	void updateControlSim();
 	void update(const float& dt);
 };

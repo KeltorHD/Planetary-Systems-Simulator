@@ -10,6 +10,7 @@
     <save>Сохранить</save>
     <fullscreen>Полноэкранный режим</fullscreen>
     <resolution>Разрешение</resolution>
+    <font_size>Размер шрифта</font_size>
   </menu>
   <simulation>
     <help>Помощь</help>
@@ -17,7 +18,7 @@
     <move_down>Переместить камеру вниз: S</move_down>
     <move_left>Переместить камеру влево: A</move_left>
     <move_right>Переместить камеру вправо: D</move_right>
-    <move_scroll_up>Увеличить пространство: +</move_scroll_up>
-    <move_scroll_down>Уменьшить пространство: -</move_scroll_down>
+    <move_scroll_up>Увеличить пространство: +/PgUp</move_scroll_up>
+    <move_scroll_down>Уменьшить пространство: -/PgDn</move_scroll_down>
   </simulation>
 </text>

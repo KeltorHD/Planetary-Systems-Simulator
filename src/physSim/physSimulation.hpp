@@ -17,6 +17,7 @@ public:
 
 	/*функции*/
 	void loadSystemXml(const std::string& path);
+	void loadDemoSystem();
 	void saveSystemXml(const std::string& path) const;
 
 	sf::Vector2f getMaxMassCoord() const;

@@ -9,6 +9,7 @@ GraphicsSettings::GraphicsSettings()
 	this->verticalSync = false;
 	this->framerateLimit = 120u;
 	this->antialiasingLevel = 0u;
+	this->fontSize = 0u;
 }
 
 void GraphicsSettings::saveXml(const std::string path)
@@ -24,6 +25,7 @@ void GraphicsSettings::saveXml(const std::string path)
 		ref->FirstChildElement("framerate_limit")->SetText(this->framerateLimit);
 		ref->FirstChildElement("vertical_sync")->SetText(this->verticalSync);
 		ref->FirstChildElement("antialiasinc_level")->SetText(this->antialiasingLevel);
+		ref->FirstChildElement("font_size")->SetText(this->fontSize);
 		ref->FirstChildElement("lang")->SetText(this->lang.c_str());
 		file.SaveFile(path.c_str());
 	}
@@ -46,6 +48,7 @@ void GraphicsSettings::loadXml(const std::string path)
 		this->framerateLimit = ref->FirstChildElement("framerate_limit")->UnsignedText();
 		this->verticalSync = ref->FirstChildElement("vertical_sync")->BoolText();
 		this->antialiasingLevel = ref->FirstChildElement("antialiasinc_level")->UnsignedText();
+		this->fontSize = ref->FirstChildElement("font_size")->IntText();
 		this->lang = ref->FirstChildElement("lang")->GetText();
 	}
 	else

@@ -38,8 +38,10 @@ void Program::initWindow()
 
 	ImGui::SFML::Init(*this->window);
 	
-	ImGuiIO& io = ImGui::GetIO();
-	auto f = io.Fonts->AddFontFromFileTTF("font/GoogleSans-Regular.ttf", 18.0f, nullptr, io.Fonts->GetGlyphRangesCyrillic());
+	ImGui::GetIO().Fonts->AddFontFromFileTTF
+	(
+		"font/GoogleSans-Regular.ttf", static_cast<float>(this->stateData.gfxSettings->fontSize), nullptr, ImGui::GetIO().Fonts->GetGlyphRangesCyrillic()
+	);
 	ImGui::SFML::UpdateFontTexture();
 
 	this->window->setFramerateLimit(this->gfxSettings.framerateLimit);

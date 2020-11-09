@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "physSimulation.hpp"
 
+static const char* demo_system{ "<?xml version=\"1.0\" encoding=\"UTF-8\"?><system><system_name>Base</system_name><description>Sun, Earth and Moon</description><object><name>Sun</name><type>0</type><mass>10000</mass><x>500</x><y>370</y><vx>0</vx><vy>0</vy><r>20</r><color><r>255</r><g>255</g><b>0</b></color></object><object><name>Earth</name><type>1</type><mass>200</mass><x>180</x><y>370</y><vx>0</vx><vy>-5</vy><r>7</r><color><r>0</r><g>0</g><b>255</b></color></object><object><name>Moon</name><type>2</type><mass>15</mass><x>160</x><y>370</y><vx>0</vx><vy>-8</vy><r>4</r><color><r>72</r><g>72</g><b>72</b></color></object></system>" };
+
 void PhysSimulation::loadSystemXml(const std::string& path)
 {
 	using namespace tinyxml2;
@@ -34,6 +36,38 @@ void PhysSimulation::loadSystemXml(const std::string& path)
 	else
 	{
 		throw "NOT LOAD FILE " + path;
+	}
+}
+
+void PhysSimulation::loadDemoSystem()
+{
+	using namespace tinyxml2;
+	XMLDocument sys;
+	if (sys.Parse(demo_system) == XMLError::XML_SUCCESS)
+	{
+		for (auto object = sys.FirstChildElement("system")->FirstChildElement("object"); object != nullptr; object = object->NextSiblingElement())
+		{
+			SpaceObj* tmp = new SpaceObj
+			(
+				object->FirstChildElement("mass")->DoubleText(),
+				object->FirstChildElement("x")->DoubleText(),
+				object->FirstChildElement("y")->DoubleText(),
+				object->FirstChildElement("vx")->DoubleText(),
+				object->FirstChildElement("vy")->DoubleText(),
+				object->FirstChildElement("name")->GetText(),
+				object->FirstChildElement("r")->DoubleText(),
+				{
+					static_cast<sf::Uint8>(object->FirstChildElement("color")->FirstChildElement("r")->UnsignedText()),
+					static_cast<sf::Uint8>(object->FirstChildElement("color")->FirstChildElement("g")->UnsignedText()),
+					static_cast<sf::Uint8>(object->FirstChildElement("color")->FirstChildElement("b")->UnsignedText()),
+				},
+				static_cast<SpaceObj::obj_t>(object->FirstChildElement("type")->UnsignedText())
+				);
+			this->planetsSim.push_back(tmp);
+			this->planetsSave.push_back(new SpaceObj(*tmp));
+		}
+		this->systemName = { sys.FirstChildElement("system")->FirstChildElement("system_name")->GetText() };
+		this->systemDescription = { sys.FirstChildElement("system")->FirstChildElement("description")->GetText() };
 	}
 }
 

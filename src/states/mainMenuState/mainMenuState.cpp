@@ -1,10 +1,11 @@
 #include "pch.h"
 #include "mainMenuState.hpp"
 
+
 //Init func
 void MainMenuState::initVariables()
 {
-	simulation.loadSystemXml("systems/base.xml");
+	simulation.loadDemoSystem();
 	this->isSettings = false;
 
 	/*языки*/
@@ -99,7 +100,7 @@ void MainMenuState::updateInput(const float& dt)
 
 void MainMenuState::updateGUI()
 {
-	ImGui::PushFont(ImGui::GetIO().Fonts->Fonts[1]);
+	ImGui::PushFont(ImGui::GetIO().Fonts->Fonts[ImGui::GetIO().Fonts->Fonts.size() - 1]);
 
 	/*главное меню*/
 	ImGui::Begin(this->locale->get_c("program_title"));
@@ -123,7 +124,6 @@ void MainMenuState::updateGUI()
 	ImGui::End();
 	/*конец главного меню*/
 
-	
 	/*Настройки*/
 	if (this->isSettings)
 	{
@@ -149,6 +149,8 @@ void MainMenuState::updateSettingsGUI()
 	};
 	/*текущий режим полного экрана*/
 	static bool fullscreen{ this->stateData->gfxSettings->fullscreen };
+	/*текущий шрифт*/
+	static int font_size{ this->stateData->gfxSettings->fontSize };
 
 	ImGui::Begin(this->locale->get_c("settings"), &this->isSettings);
 
@@ -157,6 +159,8 @@ void MainMenuState::updateSettingsGUI()
 	ImGui::Combo(this->locale->get_c("resolution"), &selected_resolution, this->vmodes, this->vmodes_length);
 
 	ImGui::Checkbox(this->locale->get_c("fullscreen"), &fullscreen);
+
+	ImGui::SliderInt(this->locale->get_c("font_size"), &font_size, 12, 40);
 
 	if (ImGui::Button(this->locale->get_c("save"))) /*сохраняем изменения*/
 	{
@@ -189,6 +193,17 @@ void MainMenuState::updateSettingsGUI()
 				(
 					this->stateData->gfxSettings->resolution, title, sf::Style::Titlebar | sf::Style::Close, st
 				);
+		}
+		if (font_size != this->stateData->gfxSettings->fontSize) /*изменение размера шрифта*/
+		{
+			this->stateData->gfxSettings->fontSize = font_size;
+
+			ImGui::GetIO().Fonts->AddFontFromFileTTF
+			(
+				"font/GoogleSans-Regular.ttf", static_cast<float>(font_size), nullptr, ImGui::GetIO().Fonts->GetGlyphRangesCyrillic()
+			);
+
+			ImGui::SFML::UpdateFontTexture();
 		}
 
 		this->camera.setSize /*изменяем камеру*/

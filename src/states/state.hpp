@@ -45,7 +45,6 @@ protected:
 	std::map<std::string, int>* supportedKeys;
 	std::map<std::string, int> keybinds;
 	bool quit;
-	bool paused;
 
 	//Resources
 	std::map<std::string, sf::Texture> textures;
