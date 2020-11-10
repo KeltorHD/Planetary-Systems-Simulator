@@ -7,6 +7,7 @@ class PhysSimulation
 {
 public:
 	PhysSimulation() = default;
+	~PhysSimulation();
 
 	/*удаленные конструкторы и операторы*/
 	PhysSimulation(const PhysSimulation&) = delete;

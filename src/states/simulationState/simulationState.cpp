@@ -7,6 +7,7 @@ void SimulationState::initVariables()
 	this->simulation.loadDemoSystem();
 	this->ctrl = control_t::paused;
 	this->enableControlSimulation = true;
+	this->koef = 0.1f;
 
 	this->camera.setSize
 	(
@@ -113,6 +114,14 @@ void SimulationState::updateMainMenuBar()
 	/*отрисовка меню вверху экрана*/
 	if (ImGui::BeginMainMenuBar())
 	{
+		if (ImGui::BeginMenu(this->locale->get_c("system")))
+		{
+			if (ImGui::MenuItem(this->locale->get_c("enable_play")))
+			{
+				this->enableControlSimulation = true;
+			}
+			ImGui::EndMenu();
+		}
 		if (ImGui::BeginMenu(this->locale->get_c("help")))
 		{
 			ImGui::MenuItem(this->locale->get_c("move_up"));
@@ -121,7 +130,6 @@ void SimulationState::updateMainMenuBar()
 			ImGui::MenuItem(this->locale->get_c("move_right"));
 			ImGui::MenuItem(this->locale->get_c("move_scroll_up"));
 			ImGui::MenuItem(this->locale->get_c("move_scroll_down"));
-			ImGui::EndMenu();
 		}
 		ImGui::EndMainMenuBar();
 	}
@@ -135,10 +143,21 @@ void SimulationState::updateControlSim()
 	{
 		ImGui::Begin(this->locale->get_c("control_simulation"), &this->enableControlSimulation);
 		
-		ImGui::Columns(3, "control", false);  // 3-ways, no border
+		if (ImGui::Button(this->locale->get_c("play")))
+		{
+			this->ctrl = control_t::play;
+		}
 		ImGui::Separator();
-		
-		//ImGui::Button(this->locale)
+		if (ImGui::Button(this->locale->get_c("pause")))
+		{
+			this->ctrl = control_t::paused;
+		}
+		ImGui::Separator();
+		if (ImGui::Button(this->locale->get_c("play_koef")))
+		{
+			this->ctrl = control_t::play_koef;
+		}
+		ImGui::SliderFloat(this->locale->get_c("koef"), &this->koef, 0.1f, 10.f);
 
 		ImGui::End();
 	}
@@ -148,7 +167,9 @@ void SimulationState::updateControlSim()
 void SimulationState::update(const float& dt)
 {
 	if (this->ctrl != control_t::paused)
-		this->simulation.update(2 * dt);
+	{
+		this->simulation.update((this->ctrl == control_t::play_koef ? this->koef : 1.f) * 2 * dt);
+	}
 
 	this->updateInput(dt);
 	this->updateGUI();

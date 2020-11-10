@@ -20,5 +20,11 @@
     <move_right>Переместить камеру вправо: D</move_right>
     <move_scroll_up>Увеличить пространство: +/PgUp</move_scroll_up>
     <move_scroll_down>Уменьшить пространство: -/PgDn</move_scroll_down>
+    <pause>Пауза</pause>
+    <play>Симуляция</play>
+    <play_koef>Симуляция с коэф.</play_koef>
+    <koef>Коэффициент</koef>
+    <system>Система</system>
+    <enable_play>Включить контроль над симуляцией</enable_play>
   </simulation>
 </text>
