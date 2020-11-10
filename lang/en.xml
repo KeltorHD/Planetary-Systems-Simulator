@@ -21,11 +21,19 @@
     <move_scroll_up>Scroll camera up: +/PgUp</move_scroll_up>
     <move_scroll_down>Scroll camera down: -/PgDn</move_scroll_down>
     <control_simulation>Control simulation</control_simulation>
+    <edit_simulation>Simulation editing</edit_simulation>
+    <info>Information</info>
+    <name>System name</name>
+    <center_mass>Center the camera on the most massive body: C</center_mass>
+    <reload_help>Restore the original state of the bodies: R</reload_help>
     <pause>Pause</pause>
+    <reload>Restore orig. state</reload>
+    <center>Center</center>
     <play>Play</play>
     <play_koef>Play with koef.</play_koef>
     <koef>Koefficient</koef>
     <system>System</system>
     <enable_play>Enable control of simulaton</enable_play>
+    <enable_edit>Enable Simulation Editing</enable_edit>
   </simulation>
 </text>

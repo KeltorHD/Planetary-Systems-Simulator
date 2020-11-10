@@ -28,7 +28,9 @@ private:
 	float koef;                  /*коэффициент ускорения/замедления*/
 
 	/*для GUI*/
-	bool enableControlSimulation;
+	bool enableControlSimulation; /*манипулирование симуляцией*/
+	bool enableEditSimulation;    /*редактирование объектов в симуляции*/
+	char* input_name;             /*имя системы*/
 
 	void initVariables();
 	void initKeybinds();
@@ -38,5 +40,6 @@ private:
 	void updateGUI();
 	void updateMainMenuBar();
 	void updateControlSim();
+	void updateEditSim();
 	void update(const float& dt);
 };

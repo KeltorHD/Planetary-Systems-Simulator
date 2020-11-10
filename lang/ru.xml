@@ -20,11 +20,20 @@
     <move_right>Переместить камеру вправо: D</move_right>
     <move_scroll_up>Увеличить пространство: +/PgUp</move_scroll_up>
     <move_scroll_down>Уменьшить пространство: -/PgDn</move_scroll_down>
+    <center_mass>Центрировать камеру на самое масс. тело: C</center_mass>
+    <reload_help>Восстановить исходное состояние тел: R</reload_help>
+    <control_simulation>Контроль над симуляцией</control_simulation>
+    <edit_simulation>Редактирование симуляции</edit_simulation>
+    <info>Информация</info>
+    <name>Имя системы</name>
     <pause>Пауза</pause>
-    <play>Симуляция</play>
-    <play_koef>Симуляция с коэф.</play_koef>
+    <reload>Восст. исх. сост.</reload>
+    <center>Центрировать</center>
+    <play>Симулировать</play>
+    <play_koef>Симулировать с коэф.</play_koef>
     <koef>Коэффициент</koef>
     <system>Система</system>
     <enable_play>Включить контроль над симуляцией</enable_play>
+    <enable_edit>Включить редактирование симуляции</enable_edit>
   </simulation>
 </text>

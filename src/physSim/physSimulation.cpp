@@ -175,6 +175,11 @@ sf::Vector2f PhysSimulation::getMaxMassCoord() const
 	return sf::Vector2f();
 }
 
+const std::string& PhysSimulation::getName() const
+{
+	return this->systemName;
+}
+
 void PhysSimulation::restoreInitialState()
 {
 	for (size_t i = 0; i < this->planetsSim.size(); i++)

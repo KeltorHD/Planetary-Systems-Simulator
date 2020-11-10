@@ -22,6 +22,7 @@ public:
 	void saveSystemXml(const std::string& path) const;
 
 	sf::Vector2f getMaxMassCoord() const;
+	const std::string& getName() const;
 
 	void restoreInitialState(); /*восстановление системы в том состоянии, какое было на момент загрузки*/
 
