@@ -6,7 +6,7 @@ static struct TextFilters
 {
 	static int FilterImGuiLetters(ImGuiInputTextCallbackData* data)
 	{
-		if (data->EventChar < 256 && strchr(" 0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZàáâãäå¸æçèéêëìíîïðñòóôõö÷øùúûüýþÿÀÁÂÃÄÅ¨ÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞß", (char)data->EventChar))
+		if (data->EventChar < 256 && strchr(" 0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZÐ°Ð±Ð²Ð³Ð´ÐµÑ‘Ð¶Ð·Ð¸Ð¹ÐºÐ»Ð¼Ð½Ð¾Ð¿Ñ€ÑÑ‚ÑƒÑ„Ñ…Ñ†Ñ‡ÑˆÑ‰ÑŠÑ‹ÑŒÑÑŽÑÐÐ‘Ð’Ð“Ð”Ð•ÐÐ–Ð—Ð˜Ð™ÐšÐ›ÐœÐÐžÐŸÐ Ð¡Ð¢Ð£Ð¤Ð¥Ð¦Ð§Ð¨Ð©ÐªÐ«Ð¬Ð­Ð®Ð¯", (char)data->EventChar))
 			return 0;
 		return 1;
 	}
@@ -124,13 +124,13 @@ void SimulationState::updateGUI()
 {
 	ImGui::PushFont(ImGui::GetIO().Fonts->Fonts[ImGui::GetIO().Fonts->Fonts.size() - 1]);
 
-	/*îòðèñîâêà ìåíþ ââåðõó ýêðàíà*/
+	/*Ð¾Ñ‚Ñ€Ð¸ÑÐ¾Ð²ÐºÐ° Ð¼ÐµÐ½ÑŽ Ð²Ð²ÐµÑ€Ñ…Ñƒ ÑÐºÑ€Ð°Ð½Ð°*/
 	this->updateMainMenuBar();
 
-	/*îòðèñîâêà ìåíþ óïðàâëåíèÿ ñèìóëÿöèåé*/
+	/*Ð¾Ñ‚Ñ€Ð¸ÑÐ¾Ð²ÐºÐ° Ð¼ÐµÐ½ÑŽ ÑƒÐ¿Ñ€Ð°Ð²Ð»ÐµÐ½Ð¸Ñ ÑÐ¸Ð¼ÑƒÐ»ÑÑ†Ð¸ÐµÐ¹*/
 	this->updateControlSim();
 
-	/*îòðèñîâêà ìåíþ ðåäàêòèðîâàíèÿ ñèìóëÿöèåé*/
+	/*Ð¾Ñ‚Ñ€Ð¸ÑÐ¾Ð²ÐºÐ° Ð¼ÐµÐ½ÑŽ Ñ€ÐµÐ´Ð°ÐºÑ‚Ð¸Ñ€Ð¾Ð²Ð°Ð½Ð¸Ñ ÑÐ¸Ð¼ÑƒÐ»ÑÑ†Ð¸ÐµÐ¹*/
 	this->updateEditSim();
 
 	ImGui::PopFont();
@@ -138,7 +138,7 @@ void SimulationState::updateGUI()
 
 void SimulationState::updateMainMenuBar()
 {
-	/*îòðèñîâêà ìåíþ ââåðõó ýêðàíà*/
+	/*Ð¾Ñ‚Ñ€Ð¸ÑÐ¾Ð²ÐºÐ° Ð¼ÐµÐ½ÑŽ Ð²Ð²ÐµÑ€Ñ…Ñƒ ÑÐºÑ€Ð°Ð½Ð°*/
 	if (ImGui::BeginMainMenuBar())
 	{
 		if (ImGui::BeginMenu(this->locale->get_c("system")))
@@ -171,7 +171,7 @@ void SimulationState::updateMainMenuBar()
 
 void SimulationState::updateControlSim()
 {
-	/*Êîíòðîëèðîâàíèå ïðîöåññîì ñèìóëÿöèè*/
+	/*ÐšÐ¾Ð½Ñ‚Ñ€Ð¾Ð»Ð¸Ñ€Ð¾Ð²Ð°Ð½Ð¸Ðµ Ð¿Ñ€Ð¾Ñ†ÐµÑÑÐ¾Ð¼ ÑÐ¸Ð¼ÑƒÐ»ÑÑ†Ð¸Ð¸*/
 	if (this->enableControlSimulation)
 	{
 		ImGui::Begin(this->locale->get_c("control_simulation"), &this->enableControlSimulation);
@@ -213,37 +213,37 @@ void SimulationState::updateControlSim()
 
 void SimulationState::updateEditSim()
 {
-	/*îòðèñîâêà ìåíþ ðåäàêòèðîâàíèÿ ñèìóëÿöèåé*/
+	/*Ð¾Ñ‚Ñ€Ð¸ÑÐ¾Ð²ÐºÐ° Ð¼ÐµÐ½ÑŽ Ñ€ÐµÐ´Ð°ÐºÑ‚Ð¸Ñ€Ð¾Ð²Ð°Ð½Ð¸Ñ ÑÐ¸Ð¼ÑƒÐ»ÑÑ†Ð¸ÐµÐ¹*/
 	if (this->enableEditSimulation)
 	{
 		ImGui::Begin(this->locale->get_c("edit_simulation"), &this->enableEditSimulation);
 
 		ImGui::Text(this->locale->get_c("info"));
 
-		/*íàçâàíèå ñèñòåìû*/
+		/*Ð½Ð°Ð·Ð²Ð°Ð½Ð¸Ðµ ÑÐ¸ÑÑ‚ÐµÐ¼Ñ‹*/
 		if (ImGui::InputText(this->locale->get_c("name"), this->input_name, 256, ImGuiInputTextFlags_CallbackCharFilter, TextFilters::FilterImGuiLetters))
 		{
 			this->simulation.setName(this->input_name);
 		}
 
-		/*îïèñàíèå ñèñòåìû*/
-		if (ImGui::InputText(u8"Îïèñàíèå ñèñòåìû", this->input_desc, 256))
+		/*Ð¾Ð¿Ð¸ÑÐ°Ð½Ð¸Ðµ ÑÐ¸ÑÑ‚ÐµÐ¼Ñ‹*/
+		if (ImGui::InputText("ÐžÐ¿Ð¸ÑÐ°Ð½Ð¸Ðµ ÑÐ¸ÑÑ‚ÐµÐ¼Ñ‹", this->input_desc, 256))
 		{
 			this->simulation.setDescription(this->input_desc);
 		}
 
-		/*Êíîïêè ñîçäàòü òåëî è ñîõðàíèòü ñèñòåìó*/
-		if (ImGui::Button(u8"Íà÷àòü/çàâåðøèòü ñîçäàíèå òåëà"))
+		/*ÐšÐ½Ð¾Ð¿ÐºÐ¸ ÑÐ¾Ð·Ð´Ð°Ñ‚ÑŒ Ñ‚ÐµÐ»Ð¾ Ð¸ ÑÐ¾Ñ…Ñ€Ð°Ð½Ð¸Ñ‚ÑŒ ÑÐ¸ÑÑ‚ÐµÐ¼Ñƒ*/
+		if (ImGui::Button("ÐÐ°Ñ‡Ð°Ñ‚ÑŒ/Ð·Ð°Ð²ÐµÑ€ÑˆÐ¸Ñ‚ÑŒ ÑÐ¾Ð·Ð´Ð°Ð½Ð¸Ðµ Ñ‚ÐµÐ»Ð°"))
 		{
 			this->isAdding = !this->isAdding;
 		}
-		if (ImGui::Button(u8"Ñîõðàíèòü ñèñòåìó"))
+		if (ImGui::Button("Ð¡Ð¾Ñ…Ñ€Ð°Ð½Ð¸Ñ‚ÑŒ ÑÐ¸ÑÑ‚ÐµÐ¼Ñƒ"))
 		{
 			this->simulation.saveSystemXml();
 		}
 
-		/*Ñâîéñòà òåë:*/
-		if (ImGui::TreeNode(u8"Îáúåêòû"))
+		/*Ð¡Ð²Ð¾Ð¹ÑÑ‚Ð° Ñ‚ÐµÐ»:*/
+		if (ImGui::TreeNode("ÐžÐ±ÑŠÐµÐºÑ‚Ñ‹"))
 		{
 			static ImVec4 color{};
 			static SpaceObj::obj_t type{};
@@ -251,23 +251,23 @@ void SimulationState::updateEditSim()
 			{
 				if (ImGui::TreeNode(std::string(std::string("Obj ") + std::to_string(i + 1)).c_str()))
 				{
-					/*ïðèñâàèâàíèå ïåðåìåííûõ*/
+					/*Ð¿Ñ€Ð¸ÑÐ²Ð°Ð¸Ð²Ð°Ð½Ð¸Ðµ Ð¿ÐµÑ€ÐµÐ¼ÐµÐ½Ð½Ñ‹Ñ…*/
 					color = ImVec4(this->simulation.getObjects()[i]->getColor());
 					std::fill(this->edit_name_obj, this->edit_name_obj + 256, 0);
 					std::copy(this->simulation.getObjects()[i]->getName().begin(), this->simulation.getObjects()[i]->getName().end(), this->edit_name_obj);
 
-					if (ImGui::InputText(u8"Èìÿ îáúåêòà", this->edit_name_obj, 256)) /*èìÿ òåëà*/
+					if (ImGui::InputText("Ð˜Ð¼Ñ Ð¾Ð±ÑŠÐµÐºÑ‚Ð°", this->edit_name_obj, 256)) /*Ð¸Ð¼Ñ Ñ‚ÐµÐ»Ð°*/
 					{
 						this->simulation.setObjects()[i]->setName(this->edit_name_obj);
 					}
 
-					ImGui::Text(u8"Õàðàêòåðèñòèêè"); /*õàðàêòåðèñòèêè*/
+					ImGui::Text("Ð¥Ð°Ñ€Ð°ÐºÑ‚ÐµÑ€Ð¸ÑÑ‚Ð¸ÐºÐ¸"); /*Ñ…Ð°Ñ€Ð°ÐºÑ‚ÐµÑ€Ð¸ÑÑ‚Ð¸ÐºÐ¸*/
 
-					ImGui::InputDouble(u8"X", &this->simulation.setObjects()[i]->setX()); /*x*/
-					ImGui::InputDouble(u8"Y", &this->simulation.setObjects()[i]->setY()); /*x*/
-					ImGui::InputDouble(u8"Vx", &this->simulation.setObjects()[i]->setVx()); /*x*/
-					ImGui::InputDouble(u8"Vy", &this->simulation.setObjects()[i]->setVy()); /*x*/
-					ImGui::InputDouble(u8"R", &this->simulation.setObjects()[i]->setRadius()); /*x*/
+					ImGui::InputDouble("X", &this->simulation.setObjects()[i]->setX()); /*x*/
+					ImGui::InputDouble("Y", &this->simulation.setObjects()[i]->setY()); /*x*/
+					ImGui::InputDouble("Vx", &this->simulation.setObjects()[i]->setVx()); /*x*/
+					ImGui::InputDouble("Vy", &this->simulation.setObjects()[i]->setVy()); /*x*/
+					ImGui::InputDouble("R", &this->simulation.setObjects()[i]->setRadius()); /*x*/
 
 					ImGui::TreePop();
 				}
