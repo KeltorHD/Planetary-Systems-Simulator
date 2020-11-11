@@ -20,9 +20,18 @@ public:
 	void loadSystemXml(const std::string& path);
 	void loadDemoSystem();
 	void saveSystemXml(const std::string& path) const;
+	void saveSystemXml() const;
 
+	/*get*/
 	sf::Vector2f getMaxMassCoord() const;
 	const std::string& getName() const;
+	const size_t& getCountObj() const;
+	const std::vector<SpaceObj*> getObjects() const;
+
+	/*set*/
+	void setName(const char* name);
+	void setDescription(const char* desc);
+	std::vector<SpaceObj*> setObjects() const;
 
 	void restoreInitialState(); /*восстановление системы в том состоянии, какое было на момент загрузки*/
 

@@ -1,6 +1,17 @@
 #include "pch.h"
 #include "simulationState.hpp"
 
+
+static struct TextFilters
+{
+	static int FilterImGuiLetters(ImGuiInputTextCallbackData* data)
+	{
+		if (data->EventChar < 256 && strchr(" 0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZабвгдеЄжзийклмнопрстуфхцчшщъыьэю€јЅ¬√ƒ≈®∆«»… ЋћЌќѕ–—“”‘’÷„ЎўЏџ№Ёёя", (char)data->EventChar))
+			return 0;
+		return 1;
+	}
+};
+
 //Init func
 void SimulationState::initVariables()
 {
@@ -8,8 +19,13 @@ void SimulationState::initVariables()
 	this->ctrl = control_t::paused;
 	this->enableControlSimulation = true;
 	this->enableEditSimulation = true;
+	this->isAdding = false;
 	this->koef = 0.1f;
-	this->input_name = new char[256]{0};
+	this->input_name = new char[256]{ 0 };
+	this->input_desc = new char[256]{ 0 };
+	this->edit_name_obj = new char[256]{ 0 };
+	this->add_obj = nullptr;
+
 	std::copy(this->simulation.getName().begin(), this->simulation.getName().end(), this->input_name);
 
 	this->camera.setSize
@@ -47,6 +63,10 @@ SimulationState::SimulationState(StateData* state_data)
 SimulationState::~SimulationState()
 {
 	delete this->input_name;
+	delete this->input_desc;
+	delete this->edit_name_obj;
+	if (this->add_obj)
+		delete this->add_obj;
 }
 
 
@@ -156,7 +176,7 @@ void SimulationState::updateControlSim()
 	{
 		ImGui::Begin(this->locale->get_c("control_simulation"), &this->enableControlSimulation);
 
-		ImGui::Columns(2, "col", false);
+		ImGui::Columns(2, "control", false);
 		
 		if (ImGui::Button(this->locale->get_c("play")))
 		{
@@ -200,7 +220,60 @@ void SimulationState::updateEditSim()
 
 		ImGui::Text(this->locale->get_c("info"));
 
-		ImGui::InputText(this->locale->get_c("name"), this->input_name, 256);
+		/*название системы*/
+		if (ImGui::InputText(this->locale->get_c("name"), this->input_name, 256, ImGuiInputTextFlags_CallbackCharFilter, TextFilters::FilterImGuiLetters))
+		{
+			this->simulation.setName(this->input_name);
+		}
+
+		/*описание системы*/
+		if (ImGui::InputText(u8"ќписание системы", this->input_desc, 256))
+		{
+			this->simulation.setDescription(this->input_desc);
+		}
+
+		/* нопки создать тело и сохранить систему*/
+		if (ImGui::Button(u8"Ќачать/завершить создание тела"))
+		{
+			this->isAdding = !this->isAdding;
+		}
+		if (ImGui::Button(u8"—охранить систему"))
+		{
+			this->simulation.saveSystemXml();
+		}
+
+		/*—войста тел:*/
+		if (ImGui::TreeNode(u8"ќбъекты"))
+		{
+			static ImVec4 color{};
+			static SpaceObj::obj_t type{};
+			for (size_t i = 0; i < this->simulation.getCountObj(); i++)
+			{
+				if (ImGui::TreeNode(std::string(std::string("Obj ") + std::to_string(i + 1)).c_str()))
+				{
+					/*присваивание переменных*/
+					color = ImVec4(this->simulation.getObjects()[i]->getColor());
+					std::fill(this->edit_name_obj, this->edit_name_obj + 256, 0);
+					std::copy(this->simulation.getObjects()[i]->getName().begin(), this->simulation.getObjects()[i]->getName().end(), this->edit_name_obj);
+
+					if (ImGui::InputText(u8"»м€ объекта", this->edit_name_obj, 256)) /*им€ тела*/
+					{
+						this->simulation.setObjects()[i]->setName(this->edit_name_obj);
+					}
+
+					ImGui::Text(u8"’арактеристики"); /*характеристики*/
+
+					ImGui::InputDouble(u8"X", &this->simulation.setObjects()[i]->setX()); /*x*/
+					ImGui::InputDouble(u8"Y", &this->simulation.setObjects()[i]->setY()); /*x*/
+					ImGui::InputDouble(u8"Vx", &this->simulation.setObjects()[i]->setVx()); /*x*/
+					ImGui::InputDouble(u8"Vy", &this->simulation.setObjects()[i]->setVy()); /*x*/
+					ImGui::InputDouble(u8"R", &this->simulation.setObjects()[i]->setRadius()); /*x*/
+
+					ImGui::TreePop();
+				}
+			}
+			ImGui::TreePop();
+		}
 
 		ImGui::End();
 	}
@@ -210,7 +283,7 @@ void SimulationState::update(const float& dt)
 {
 	if (this->ctrl != control_t::paused)
 	{
-		this->simulation.update((this->ctrl == control_t::play_koef ? this->koef : 1.f) * 2 * dt);
+		this->simulation.update((this->ctrl == control_t::play_koef ? this->koef : 1.f) * 2.f * dt);
 	}
 
 	this->updateInput(dt);

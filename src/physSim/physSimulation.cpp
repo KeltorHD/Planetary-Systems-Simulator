@@ -161,6 +161,11 @@ void PhysSimulation::saveSystemXml(const std::string& path) const
 		throw "NOT LOAD FILE " + path;
 }
 
+void PhysSimulation::saveSystemXml() const
+{
+	this->saveSystemXml("systems/" + this->systemName + ".xml");
+}
+
 sf::Vector2f PhysSimulation::getMaxMassCoord() const
 {
 	size_t i = std::distance(this->planetsSim.begin(), std::max_element(this->planetsSim.begin(), this->planetsSim.end(), [](const SpaceObj* o1, const SpaceObj* o2) {return o1->mass <= o2->mass; }));
@@ -178,6 +183,31 @@ sf::Vector2f PhysSimulation::getMaxMassCoord() const
 const std::string& PhysSimulation::getName() const
 {
 	return this->systemName;
+}
+
+const size_t& PhysSimulation::getCountObj() const
+{
+	return this->planetsSim.size();
+}
+
+const std::vector<SpaceObj*> PhysSimulation::getObjects() const
+{
+	return this->planetsSim;
+}
+
+void PhysSimulation::setName(const char* name)
+{
+	this->systemName = name;
+}
+
+void PhysSimulation::setDescription(const char* desc)
+{
+	this->systemDescription = desc;
+}
+
+std::vector<SpaceObj*> PhysSimulation::setObjects() const
+{
+	return this->planetsSim;
 }
 
 void PhysSimulation::restoreInitialState()

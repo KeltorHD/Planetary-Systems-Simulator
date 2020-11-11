@@ -31,6 +31,10 @@ private:
 	bool enableControlSimulation; /*манипулирование симул€цией*/
 	bool enableEditSimulation;    /*редактирование объектов в симул€ции*/
 	char* input_name;             /*им€ системы*/
+	char* input_desc;             /*описание системы*/
+	bool isAdding;                /*режим ли добавлени€ тела?*/
+	SpaceObj* add_obj;            /*добавл€емый объект*/
+	char* edit_name_obj;          /*изменение имени объекта*/
 
 	void initVariables();
 	void initKeybinds();
