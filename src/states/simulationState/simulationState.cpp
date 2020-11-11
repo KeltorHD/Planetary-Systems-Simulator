@@ -25,6 +25,13 @@ void SimulationState::initVariables()
 	this->input_desc = new char[256]{ 0 };
 	this->edit_name_obj = new char[256]{ 0 };
 	this->add_obj = nullptr;
+	this->type_names = new char* [size_t(SpaceObj::obj_t::count)];
+	for (size_t i = 0; i < size_t(SpaceObj::obj_t::count); i++)
+	{
+		std::string tmp = SpaceObj::objToString(SpaceObj::obj_t(i));
+		this->type_names[i] = new char[tmp.length() + 1];
+		std::copy(tmp.begin(), tmp.end(), this->type_names[i]);
+	}
 
 	std::copy(this->simulation.getName().begin(), this->simulation.getName().end(), this->input_name);
 
@@ -62,6 +69,11 @@ SimulationState::SimulationState(StateData* state_data)
 
 SimulationState::~SimulationState()
 {
+	for (size_t i = 0; i < size_t(SpaceObj::obj_t::count); i++)
+	{
+		delete this->type_names[i];
+	}
+	delete this->type_names;
 	delete this->input_name;
 	delete this->input_desc;
 	delete this->edit_name_obj;
@@ -246,28 +258,47 @@ void SimulationState::updateEditSim()
 		if (ImGui::TreeNode("Объекты"))
 		{
 			static ImVec4 color{};
-			static SpaceObj::obj_t type{};
+			static int index_type{};
 			for (size_t i = 0; i < this->simulation.getCountObj(); i++)
 			{
 				if (ImGui::TreeNode(std::string(std::string("Obj ") + std::to_string(i + 1)).c_str()))
 				{
 					/*присваивание переменных*/
+					bool isUpdate{ false };
 					color = ImVec4(this->simulation.getObjects()[i]->getColor());
 					std::fill(this->edit_name_obj, this->edit_name_obj + 256, 0);
 					std::copy(this->simulation.getObjects()[i]->getName().begin(), this->simulation.getObjects()[i]->getName().end(), this->edit_name_obj);
 
+					ImGui::Text("Характеристики"); /*характеристики*/
+
 					if (ImGui::InputText("Имя объекта", this->edit_name_obj, 256)) /*имя тела*/
 					{
 						this->simulation.setObjects()[i]->setName(this->edit_name_obj);
+						isUpdate = true;
 					}
 
-					ImGui::Text("Характеристики"); /*характеристики*/
+					if (ImGui::ColorEdit3("Цвет объекта", (float*)&color))  /*цвет*/
+					{ 
+						isUpdate = true; 
+						this->simulation.setObjects()[i]->setColor(static_cast<sf::Color>(color));
+					}
 
-					ImGui::InputDouble("X", &this->simulation.setObjects()[i]->setX()); /*x*/
-					ImGui::InputDouble("Y", &this->simulation.setObjects()[i]->setY()); /*x*/
-					ImGui::InputDouble("Vx", &this->simulation.setObjects()[i]->setVx()); /*x*/
-					ImGui::InputDouble("Vy", &this->simulation.setObjects()[i]->setVy()); /*x*/
-					ImGui::InputDouble("R", &this->simulation.setObjects()[i]->setRadius()); /*x*/
+					if (ImGui::Combo("Тип тела", &index_type, this->type_names, static_cast<int>(SpaceObj::obj_t::count)))
+					{
+						isUpdate = true;
+						this->simulation.setObjects()[i]->setType(SpaceObj::obj_t(index_type));
+					}
+
+					if (ImGui::InputDouble("X", &this->simulation.setObjects()[i]->setX())) { isUpdate = true; } /*x*/
+					if (ImGui::InputDouble("Y", &this->simulation.setObjects()[i]->setY())) { isUpdate = true; } /*x*/
+					if (ImGui::InputDouble("Vx", &this->simulation.setObjects()[i]->setVx())) { isUpdate = true; } /*x*/
+					if (ImGui::InputDouble("Vy", &this->simulation.setObjects()[i]->setVy())) { isUpdate = true; } /*x*/
+					if (ImGui::InputDouble("R", &this->simulation.setObjects()[i]->setRadius())) { isUpdate = true; } /*x*/
+
+					if (isUpdate)
+					{
+						this->simulation.replaceSimtoSave();
+					}
 
 					ImGui::TreePop();
 				}

@@ -40,6 +40,7 @@ public:
 	/*set*/
 	void setName(const char* name);
 	void setColor(const sf::Color& var);
+	void setType(obj_t type);
 	double& setMass();
 	double& setX();
 	double& setY();
@@ -50,6 +51,8 @@ public:
 	void update();
 
 	void render(sf::RenderTarget* target);
+
+	static std::string objToString(obj_t type);
 	
 private:
 	double mass;			 /*масса*/

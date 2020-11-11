@@ -223,6 +223,19 @@ void PhysSimulation::restoreInitialState()
 	}
 }
 
+void PhysSimulation::replaceSimtoSave()
+{
+	for (size_t i = 0; i < this->planetsSave.size(); i++)
+	{
+		delete this->planetsSave[i];
+	}
+	this->planetsSave.clear();
+	for (size_t i = 0; i < this->planetsSim.size(); i++)
+	{
+		this->planetsSave.push_back(new SpaceObj(*this->planetsSim[i]));
+	}
+}
+
 void PhysSimulation::update(const float& dt)
 {
 	for (size_t i = 0; i < 5/*magic*/; i++)

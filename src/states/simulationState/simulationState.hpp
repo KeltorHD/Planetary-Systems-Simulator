@@ -35,6 +35,7 @@ private:
 	bool isAdding;                /*режим ли добавления тела?*/
 	SpaceObj* add_obj;            /*добавляемый объект*/
 	char* edit_name_obj;          /*изменение имени объекта*/
+	char** type_names;            /*имена всех типов объектов*/
 
 	void initVariables();
 	void initKeybinds();

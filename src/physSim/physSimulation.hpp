@@ -34,6 +34,7 @@ public:
 	std::vector<SpaceObj*> setObjects() const;
 
 	void restoreInitialState(); /*восстановление системы в том состоянии, какое было на момент загрузки*/
+	void replaceSimtoSave();    /*объекты из симуляции становятся в вектор для сохранения*/
 
 	void update(const float& dt);
 	void render(sf::RenderTarget* target);

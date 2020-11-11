@@ -73,6 +73,11 @@ void SpaceObj::setColor(const sf::Color& var)
 	this->obj_color = var;
 }
 
+void SpaceObj::setType(obj_t type)
+{
+	this->type = type;
+}
+
 double& SpaceObj::setMass()
 {
 	return this->mass;
@@ -105,8 +110,6 @@ double& SpaceObj::setRadius()
 
 void SpaceObj::update()
 {
-	this->shape.setRadius(static_cast<float>(this->radius));
-	this->shape.setOrigin(static_cast<float>(this->radius), static_cast<float>(this->radius));
 	this->shape.setPosition(static_cast<float>(this->x), static_cast<float>(this->y));
 }
 
@@ -115,5 +118,31 @@ void SpaceObj::render(sf::RenderTarget* target)
 	this->shape.setRadius(static_cast<float>(this->radius));
 	this->shape.setOrigin(static_cast<float>(this->radius), static_cast<float>(this->radius));
 	this->shape.setPosition(static_cast<float>(this->x), static_cast<float>(this->y));
+	this->shape.setFillColor(this->obj_color);
 	target->draw(this->shape);
+}
+
+std::string SpaceObj::objToString(obj_t type)
+{
+	switch (type)
+	{
+	case SpaceObj::obj_t::star:
+		return "star";
+		break;
+	case SpaceObj::obj_t::planet:
+		return "planet";
+		break;
+	case SpaceObj::obj_t::satellite:
+		return "satellite";
+		break;
+	case SpaceObj::obj_t::dwarf_planet:
+		return "dwarf_planet";
+		break;
+	case SpaceObj::obj_t::asteroid:
+		return "asteroid";
+		break;
+	case SpaceObj::obj_t::count:
+		break;
+	}
+	return "error";
 }
