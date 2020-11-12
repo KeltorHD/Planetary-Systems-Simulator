@@ -16,6 +16,7 @@ public:
 	std::map<std::string, int>* supportedKeys;
 	std::stack<State*>* states;
 	Locale* locale;
+	std::queue<sf::Event> events;
 };
 
 class State

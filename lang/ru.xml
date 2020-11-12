@@ -35,5 +35,27 @@
     <system>Система</system>
     <enable_play>Включить контроль над симуляцией</enable_play>
     <enable_edit>Включить редактирование симуляции</enable_edit>
+    <desc>Описание системы</desc>
+    <add>Начать/закончить добавление обхекта</add>
+    <save_system>Сохранить систему</save_system>
+    <objects>Объекты</objects>
+    <object>Объект</object>
+    <characteristics>Характеристики</characteristics>
+    <object_name>Имя объекта</object_name>
+    <object_color>Цвет объекта</object_color>
+    <object_type>Тип Объекта</object_type>
+    <x>X</x>
+    <y>Y</y>
+    <vx>Vx</vx>
+    <vy>Vy</vy>
+    <r>R</r>
+    <adding_object>Добавление объекта</adding_object>
+    <save_add>Сохранить</save_add>
+    <del_close>Удалить и закрыть</del_close>
+    <star>Звезда</star>
+    <planet>Планета</planet>
+    <satellite>Спутник</satellite>
+    <dwarf_planet>Карликовая планета</dwarf_planet>
+    <asteroid>Астероид</asteroid>
   </simulation>
 </text>

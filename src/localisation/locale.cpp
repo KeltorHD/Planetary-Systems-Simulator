@@ -52,6 +52,7 @@ const char* Locale::get_c(const std::string& to_locale) const
 	}
 	catch (...) /*используем английскую*/
 	{
+		std::cout << to_locale << std::endl;
 		return this->en.at(to_locale).c_str();
 	}
 }

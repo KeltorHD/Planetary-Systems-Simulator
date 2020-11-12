@@ -33,6 +33,7 @@ private:
 	char* input_name;             /*имя системы*/
 	char* input_desc;             /*описание системы*/
 	bool isAdding;                /*режим ли добавления тела?*/
+	bool enableAddMenu;           /*включено ли меню добавления объекта*/
 	SpaceObj* add_obj;            /*добавляемый объект*/
 	char* edit_name_obj;          /*изменение имени объекта*/
 	char** type_names;            /*имена всех типов объектов*/
@@ -46,5 +47,6 @@ private:
 	void updateMainMenuBar();
 	void updateControlSim();
 	void updateEditSim();
+	void updateAddObj();
 	void update(const float& dt);
 };

@@ -35,5 +35,27 @@
     <system>System</system>
     <enable_play>Enable control of simulaton</enable_play>
     <enable_edit>Enable Simulation Editing</enable_edit>
+    <desc>System Description</desc>
+    <add>Start/end body creation</add>
+    <save_system>Save system</save_system>
+    <objects>Objects</objects>
+    <object>Object</object>
+    <characteristics>Characteristics</characteristics>
+    <object_name>Object name</object_name>
+    <object_color>Object color</object_color>
+    <object_type>Object type</object_type>
+    <x>X</x>
+    <y>Y</y>
+    <vx>Vx</vx>
+    <vy>Vy</vy>
+    <r>R</r>
+    <adding_object>Adding an object</adding_object>
+    <save_add>Save</save_add>
+    <del_close>Delete and close</del_close>
+    <star>Star</star>
+    <planet>Planet</planet>
+    <satellite>Satellite</satellite>
+    <dwarf_planet>Dwarf planet</dwarf_planet>
+    <asteroid>Asteroid</asteroid>
   </simulation>
 </text>

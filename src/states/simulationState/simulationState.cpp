@@ -20,17 +20,19 @@ void SimulationState::initVariables()
 	this->enableControlSimulation = true;
 	this->enableEditSimulation = true;
 	this->isAdding = false;
+	this->add_obj = nullptr;
+	this->enableAddMenu = false;
 	this->koef = 0.1f;
 	this->input_name = new char[256]{ 0 };
 	this->input_desc = new char[256]{ 0 };
 	this->edit_name_obj = new char[256]{ 0 };
-	this->add_obj = nullptr;
 	this->type_names = new char* [size_t(SpaceObj::obj_t::count)];
 	for (size_t i = 0; i < size_t(SpaceObj::obj_t::count); i++)
 	{
-		std::string tmp = SpaceObj::objToString(SpaceObj::obj_t(i));
+		std::string tmp = this->locale->get_s(SpaceObj::objToString(SpaceObj::obj_t(i)));
 		this->type_names[i] = new char[tmp.length() + 1];
 		std::copy(tmp.begin(), tmp.end(), this->type_names[i]);
+		this->type_names[i][tmp.length()] = 0;
 	}
 
 	std::copy(this->simulation.getName().begin(), this->simulation.getName().end(), this->input_name);
@@ -126,6 +128,43 @@ void SimulationState::updateInput(const float& dt)
 		this->camera.zoom(1.f + camera_scroll);
 	}
 
+	/*adding obj*/
+	bool isLeftPress{ false };
+	while (this->stateData->events.size())
+	{
+		if (this->stateData->events.front().type == sf::Event::MouseButtonPressed
+			&& this->stateData->events.front().mouseButton.button == sf::Mouse::Left
+			&& !ImGui::GetIO().WantCaptureMouse)
+		{
+			isLeftPress = true;
+		}
+		this->stateData->events.pop();
+	}
+	if (this->isAdding && isLeftPress)
+	{
+		if (!this->add_obj)
+		{
+			this->add_obj = new SpaceObj
+			(
+				static_cast<double>((rand() % 100) + 1),
+				static_cast<double>(this->window->mapPixelToCoords(sf::Mouse::getPosition(*this->window)).x),
+				static_cast<double>(this->window->mapPixelToCoords(sf::Mouse::getPosition(*this->window)).y),
+				static_cast<double>(rand() % 10),
+				static_cast<double>(rand() % 10),
+				"DEFAULT",
+				static_cast<double>(rand() % 10),
+				sf::Color(rand() % 255, rand() % 255, rand() % 255),
+				SpaceObj::obj_t(rand() % int(SpaceObj::obj_t::count))
+			);
+			this->enableAddMenu = true;
+		}
+		else
+		{
+			this->add_obj->setX() = static_cast<double>(this->window->mapPixelToCoords(sf::Mouse::getPosition(*this->window)).x);
+			this->add_obj->setY() = static_cast<double>(this->window->mapPixelToCoords(sf::Mouse::getPosition(*this->window)).y);
+		}
+	}
+
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(this->keybinds.at("CLOSE"))))
 	{
 		this->endState();
@@ -144,6 +183,9 @@ void SimulationState::updateGUI()
 
 	/*отрисовка меню редактирования симуляцией*/
 	this->updateEditSim();
+
+	/*отрисовка меню добавления объекта*/
+	this->updateAddObj();
 
 	ImGui::PopFont();
 }
@@ -239,29 +281,29 @@ void SimulationState::updateEditSim()
 		}
 
 		/*описание системы*/
-		if (ImGui::InputText("Описание системы", this->input_desc, 256))
+		if (ImGui::InputText(this->locale->get_c("desc"), this->input_desc, 256))
 		{
 			this->simulation.setDescription(this->input_desc);
 		}
 
 		/*Кнопки создать тело и сохранить систему*/
-		if (ImGui::Button("Начать/завершить создание тела"))
+		if (ImGui::Button(this->locale->get_c("add")))
 		{
 			this->isAdding = !this->isAdding;
 		}
-		if (ImGui::Button("Сохранить систему"))
+		if (ImGui::Button(this->locale->get_c("save_system")))
 		{
 			this->simulation.saveSystemXml();
 		}
 
 		/*Свойста тел:*/
-		if (ImGui::TreeNode("Объекты"))
+		if (ImGui::TreeNode(this->locale->get_c("objects")))
 		{
 			static ImVec4 color{};
 			static int index_type{};
 			for (size_t i = 0; i < this->simulation.getCountObj(); i++)
 			{
-				if (ImGui::TreeNode(std::string(std::string("Obj ") + std::to_string(i + 1)).c_str()))
+				if (ImGui::TreeNode(std::string(this->locale->get_s("object") + " " + std::to_string(i + 1)).c_str()))
 				{
 					/*присваивание переменных*/
 					bool isUpdate{ false };
@@ -269,31 +311,31 @@ void SimulationState::updateEditSim()
 					std::fill(this->edit_name_obj, this->edit_name_obj + 256, 0);
 					std::copy(this->simulation.getObjects()[i]->getName().begin(), this->simulation.getObjects()[i]->getName().end(), this->edit_name_obj);
 
-					ImGui::Text("Характеристики"); /*характеристики*/
+					ImGui::Text(this->locale->get_c("characteristics")); /*характеристики*/
 
-					if (ImGui::InputText("Имя объекта", this->edit_name_obj, 256)) /*имя тела*/
+					if (ImGui::InputText(this->locale->get_c("object_name"), this->edit_name_obj, 256)) /*имя тела*/
 					{
 						this->simulation.setObjects()[i]->setName(this->edit_name_obj);
 						isUpdate = true;
 					}
 
-					if (ImGui::ColorEdit3("Цвет объекта", (float*)&color))  /*цвет*/
+					if (ImGui::ColorEdit3(this->locale->get_c("object_color"), (float*)&color))  /*цвет*/
 					{ 
 						isUpdate = true; 
 						this->simulation.setObjects()[i]->setColor(static_cast<sf::Color>(color));
 					}
 
-					if (ImGui::Combo("Тип тела", &index_type, this->type_names, static_cast<int>(SpaceObj::obj_t::count)))
+					if (ImGui::Combo(this->locale->get_c("object_type"), &index_type, this->type_names, static_cast<int>(SpaceObj::obj_t::count)))
 					{
 						isUpdate = true;
 						this->simulation.setObjects()[i]->setType(SpaceObj::obj_t(index_type));
 					}
 
-					if (ImGui::InputDouble("X", &this->simulation.setObjects()[i]->setX())) { isUpdate = true; } /*x*/
-					if (ImGui::InputDouble("Y", &this->simulation.setObjects()[i]->setY())) { isUpdate = true; } /*x*/
-					if (ImGui::InputDouble("Vx", &this->simulation.setObjects()[i]->setVx())) { isUpdate = true; } /*x*/
-					if (ImGui::InputDouble("Vy", &this->simulation.setObjects()[i]->setVy())) { isUpdate = true; } /*x*/
-					if (ImGui::InputDouble("R", &this->simulation.setObjects()[i]->setRadius())) { isUpdate = true; } /*x*/
+					if (ImGui::InputDouble(this->locale->get_c("x"), &this->simulation.setObjects()[i]->setX())) { isUpdate = true; }
+					if (ImGui::InputDouble(this->locale->get_c("y"), &this->simulation.setObjects()[i]->setY())) { isUpdate = true; }
+					if (ImGui::InputDouble(this->locale->get_c("vx"), &this->simulation.setObjects()[i]->setVx())) { isUpdate = true; }
+					if (ImGui::InputDouble(this->locale->get_c("vy"), &this->simulation.setObjects()[i]->setVy())) { isUpdate = true; }
+					if (ImGui::InputDouble(this->locale->get_c("r"), &this->simulation.setObjects()[i]->setRadius())) { isUpdate = true; }
 
 					if (isUpdate)
 					{
@@ -310,6 +352,67 @@ void SimulationState::updateEditSim()
 	}
 }
 
+void SimulationState::updateAddObj()
+{
+	/*начало меню добавления планеты*/
+	if (this->isAdding && this->add_obj && ImGui::Begin(this->locale->get_c("adding_object")))
+	{
+		static ImVec4 color{};
+		static int index_type{};
+
+		/*присваивание переменных*/
+		bool isUpdate{ false };
+		color = ImVec4(this->add_obj->getColor());
+		std::fill(this->edit_name_obj, this->edit_name_obj + 256, 0);
+		std::copy(this->add_obj->getName().begin(), add_obj->getName().end(), this->edit_name_obj);
+
+		ImGui::Text(this->locale->get_c("characteristics")); /*характеристики*/
+
+		if (ImGui::InputText(this->locale->get_c("object_name"), this->edit_name_obj, 256)) /*имя тела*/
+		{
+			this->add_obj->setName(this->edit_name_obj);
+			isUpdate = true;
+		}
+
+		if (ImGui::ColorEdit3(this->locale->get_c("object_color"), (float*)&color))  /*цвет*/
+		{
+			isUpdate = true;
+			this->add_obj->setColor(static_cast<sf::Color>(color));
+		}
+
+		if (ImGui::Combo(this->locale->get_c("object_type"), &index_type, this->type_names, static_cast<int>(SpaceObj::obj_t::count)))
+		{
+			isUpdate = true;
+			this->add_obj->setType(SpaceObj::obj_t(index_type));
+		}
+
+		ImGui::InputDouble(this->locale->get_c("x"), &this->add_obj->setX());
+		ImGui::InputDouble(this->locale->get_c("y"), &this->add_obj->setY());
+		ImGui::InputDouble(this->locale->get_c("vx"), &this->add_obj->setVx());
+		ImGui::InputDouble(this->locale->get_c("vy"), &this->add_obj->setVy());
+		ImGui::InputDouble(this->locale->get_c("r"), &this->add_obj->setRadius());
+
+		ImGui::Columns(2);
+		if (ImGui::Button(this->locale->get_c("save_add")))
+		{
+			this->simulation.addObj(*this->add_obj);
+			delete this->add_obj;
+			this->add_obj = nullptr;
+			this->isAdding = false;
+		}
+		ImGui::NextColumn();
+		if (ImGui::Button(this->locale->get_c("del_close")))
+		{
+			delete this->add_obj;
+			this->add_obj = nullptr;
+			this->isAdding = false;
+		}
+		ImGui::Columns(1);
+
+		ImGui::End();
+	}
+}
+
 void SimulationState::update(const float& dt)
 {
 	if (this->ctrl != control_t::paused)
@@ -319,6 +422,9 @@ void SimulationState::update(const float& dt)
 
 	this->updateInput(dt);
 	this->updateGUI();
+
+	if (this->add_obj)
+		add_obj->update();
 }
 
 void SimulationState::render(sf::RenderTarget* target)
@@ -330,4 +436,7 @@ void SimulationState::render(sf::RenderTarget* target)
 	this->window->setView(this->camera);
 
 	this->simulation.render(target);
+
+	if (this->add_obj)
+		add_obj->render(target);
 }

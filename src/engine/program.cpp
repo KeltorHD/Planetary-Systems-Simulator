@@ -135,9 +135,11 @@ void Program::updateSFMLEvents()
 	while (this->window->pollEvent(this->sfEvent))
 	{
 		ImGui::SFML::ProcessEvent(this->sfEvent);
-
+		
 		if (this->sfEvent.type == sf::Event::Closed)
 			this->window->close();
+
+		this->stateData.events.push(this->sfEvent);
 	}
 }
 

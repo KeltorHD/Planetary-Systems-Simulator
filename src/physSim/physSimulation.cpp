@@ -236,6 +236,12 @@ void PhysSimulation::replaceSimtoSave()
 	}
 }
 
+void PhysSimulation::addObj(SpaceObj obj)
+{
+	this->planetsSim.push_back(new SpaceObj(obj));
+	this->planetsSave.push_back(new SpaceObj(obj));
+}
+
 void PhysSimulation::update(const float& dt)
 {
 	for (size_t i = 0; i < 5/*magic*/; i++)

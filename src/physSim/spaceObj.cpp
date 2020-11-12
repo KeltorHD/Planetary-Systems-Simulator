@@ -127,19 +127,19 @@ std::string SpaceObj::objToString(obj_t type)
 	switch (type)
 	{
 	case SpaceObj::obj_t::star:
-		return "star";
+		return std::string("star");
 		break;
 	case SpaceObj::obj_t::planet:
-		return "planet";
+		return std::string("planet");
 		break;
 	case SpaceObj::obj_t::satellite:
-		return "satellite";
+		return std::string("satellite");
 		break;
 	case SpaceObj::obj_t::dwarf_planet:
-		return "dwarf_planet";
+		return std::string("dwarf_planet");
 		break;
 	case SpaceObj::obj_t::asteroid:
-		return "asteroid";
+		return std::string("asteroid");
 		break;
 	case SpaceObj::obj_t::count:
 		break;

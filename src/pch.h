@@ -15,6 +15,7 @@
 #include <unordered_map>
 #include <codecvt>
 #include <filesystem>
+#include <queue>
 
 /*SFML*/
 #include <SFML/Graphics.hpp>

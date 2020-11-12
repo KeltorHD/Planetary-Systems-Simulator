@@ -35,6 +35,7 @@ public:
 
 	void restoreInitialState(); /*восстановление системы в том состоянии, какое было на момент загрузки*/
 	void replaceSimtoSave();    /*объекты из симуляции становятся в вектор для сохранения*/
+	void addObj(SpaceObj obj); /*добавить новый объект в симуляцию*/
 
 	void update(const float& dt);
 	void render(sf::RenderTarget* target);
