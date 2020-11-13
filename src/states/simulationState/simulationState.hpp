@@ -30,6 +30,7 @@ private:
 	/*для GUI*/
 	bool enableControlSimulation; /*манипулирование симуляцией*/
 	bool enableEditSimulation;    /*редактирование объектов в симуляции*/
+	bool isAlwaysCenter;          /*всегда ли камера на самом массивном объекте*/
 	char* input_name;             /*имя системы*/
 	char* input_desc;             /*описание системы*/
 	bool isAdding;                /*режим ли добавления тела?*/
@@ -37,6 +38,8 @@ private:
 	SpaceObj* add_obj;            /*добавляемый объект*/
 	char* edit_name_obj;          /*изменение имени объекта*/
 	char** type_names;            /*имена всех типов объектов*/
+	char** systems;               /*доступные системы для загрузки*/
+	size_t systems_length;        /*количество доступных систем*/
 
 	void initVariables();
 	void initKeybinds();

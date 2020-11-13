@@ -19,6 +19,7 @@ void PhysSimulation::loadSystemXml(const std::string& path)
 {
 	using namespace tinyxml2;
 	XMLDocument sys;
+	this->clear();
 	if (sys.LoadFile(path.c_str()) == XMLError::XML_SUCCESS)
 	{
 		for (auto object = sys.FirstChildElement("system")->FirstChildElement("object"); object != nullptr; object = object->NextSiblingElement())
@@ -276,7 +277,10 @@ void PhysSimulation::clear()
 	{
 		delete this->planetsSave[i];
 	}
+	this->planetsSave.clear();
+	this->planetsSim.clear();
 	this->systemName = "DEFAULT";
+	this->systemDescription = "";
 }
 
 double PhysSimulation::fx(const SpaceObj* obj, double locale_x) const

@@ -29,6 +29,7 @@
     <pause>Pause</pause>
     <reload>Restore orig. state</reload>
     <center>Center</center>
+    <always_center>Always center</always_center>
     <play>Play</play>
     <play_koef>Play with koef.</play_koef>
     <koef>Koefficient</koef>
@@ -57,5 +58,8 @@
     <satellite>Satellite</satellite>
     <dwarf_planet>Dwarf planet</dwarf_planet>
     <asteroid>Asteroid</asteroid>
+    <load_system>Load system</load_system>
+    <available_system>Available systems</available_system>
+    <load>Load</load>
   </simulation>
 </text>

@@ -2,15 +2,12 @@
 #include "simulationState.hpp"
 
 
-static struct TextFilters
+static int FilterImGuiLetters(ImGuiInputTextCallbackData* data)
 {
-	static int FilterImGuiLetters(ImGuiInputTextCallbackData* data)
-	{
-		if (data->EventChar < 256 && strchr(" 0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZабвгдеёжзийклмнопрстуфхцчшщъыьэюяАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ", (char)data->EventChar))
-			return 0;
-		return 1;
-	}
-};
+	if (data->EventChar < 256 && strchr(" 0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZабвгдеёжзийклмнопрстуфхцчшщъыьэюяАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ", (char)data->EventChar))
+		return 0;
+	return 1;
+}
 
 //Init func
 void SimulationState::initVariables()
@@ -19,6 +16,7 @@ void SimulationState::initVariables()
 	this->ctrl = control_t::paused;
 	this->enableControlSimulation = true;
 	this->enableEditSimulation = true;
+	this->isAlwaysCenter = false;
 	this->isAdding = false;
 	this->add_obj = nullptr;
 	this->enableAddMenu = false;
@@ -27,6 +25,7 @@ void SimulationState::initVariables()
 	this->input_desc = new char[256]{ 0 };
 	this->edit_name_obj = new char[256]{ 0 };
 	this->type_names = new char* [size_t(SpaceObj::obj_t::count)];
+
 	for (size_t i = 0; i < size_t(SpaceObj::obj_t::count); i++)
 	{
 		std::string tmp = this->locale->get_s(SpaceObj::objToString(SpaceObj::obj_t(i)));
@@ -34,8 +33,25 @@ void SimulationState::initVariables()
 		std::copy(tmp.begin(), tmp.end(), this->type_names[i]);
 		this->type_names[i][tmp.length()] = 0;
 	}
-
 	std::copy(this->simulation.getName().begin(), this->simulation.getName().end(), this->input_name);
+
+	std::vector<std::string> v;
+	for (const auto& entry : std::filesystem::directory_iterator("systems/"))
+	{
+		std::string tmp = entry.path().string().substr
+		(
+			entry.path().string().find_last_of('/') + 1, entry.path().string().size() - entry.path().string().find_last_of('/') - 5
+		);
+		v.push_back(tmp);
+	}
+	this->systems_length = v.size();
+	this->systems = new char* [this->systems_length];
+	for (size_t i = 0; i < this->systems_length; i++)
+	{
+		this->systems[i] = new char[v[i].length() + 1];
+		std::copy(v[i].begin(), v[i].end(), this->systems[i]);
+		this->systems[i][v[i].length()] = 0;
+	}
 
 	this->camera.setSize
 	(
@@ -230,22 +246,27 @@ void SimulationState::updateControlSim()
 	{
 		ImGui::Begin(this->locale->get_c("control_simulation"), &this->enableControlSimulation);
 
-		ImGui::Columns(2, "control", false);
+		ImGui::Columns(3, "control", false);
 		
 		if (ImGui::Button(this->locale->get_c("play")))
 		{
 			this->ctrl = control_t::play;
 		}
 		ImGui::NextColumn();
-		if (ImGui::Button(this->locale->get_c("reload")))
+		if (ImGui::Button(this->locale->get_c("pause")))
 		{
-			this->simulation.restoreInitialState();
 			this->ctrl = control_t::paused;
 		}
 		ImGui::NextColumn();
-		ImGui::Separator();
-		if (ImGui::Button(this->locale->get_c("pause")))
+		if (ImGui::Button(this->locale->get_c("play_koef")))
 		{
+			this->ctrl = control_t::play_koef;
+		}
+		ImGui::NextColumn();
+		ImGui::Separator();
+		if (ImGui::Button(this->locale->get_c("reload")))
+		{
+			this->simulation.restoreInitialState();
 			this->ctrl = control_t::paused;
 		}
 		ImGui::NextColumn();
@@ -253,12 +274,14 @@ void SimulationState::updateControlSim()
 		{
 			this->camera.setCenter(this->simulation.getMaxMassCoord());
 		}
-		ImGui::Separator();
-		ImGui::Columns(1);
-		if (ImGui::Button(this->locale->get_c("play_koef")))
+		ImGui::NextColumn();
+		if (ImGui::Button(this->locale->get_c("always_center")))
 		{
-			this->ctrl = control_t::play_koef;
+			this->isAlwaysCenter = !this->isAlwaysCenter;
 		}
+		ImGui::Columns(1);
+		ImGui::Separator();
+
 		ImGui::SliderFloat(this->locale->get_c("koef"), &this->koef, 0.1f, 10.f);
 
 		ImGui::End();
@@ -275,7 +298,7 @@ void SimulationState::updateEditSim()
 		ImGui::Text(this->locale->get_c("info"));
 
 		/*название системы*/
-		if (ImGui::InputText(this->locale->get_c("name"), this->input_name, 256, ImGuiInputTextFlags_CallbackCharFilter, TextFilters::FilterImGuiLetters))
+		if (ImGui::InputText(this->locale->get_c("name"), this->input_name, 256, ImGuiInputTextFlags_CallbackCharFilter, FilterImGuiLetters))
 		{
 			this->simulation.setName(this->input_name);
 		}
@@ -294,6 +317,28 @@ void SimulationState::updateEditSim()
 		if (ImGui::Button(this->locale->get_c("save_system")))
 		{
 			this->simulation.saveSystemXml();
+		}
+
+		if (ImGui::TreeNode(this->locale->get_c("load_system"))) /*загрузка системы*/
+		{
+			static int system_input{};
+			ImGui::Combo(this->locale->get_c("available_system"), &system_input, this->systems, this->systems_length);
+
+			if (ImGui::Button(this->locale->get_c("load")))
+			{
+				this->isAdding = false;
+				if (this->add_obj)
+				{
+					delete this->add_obj;
+					this->add_obj = nullptr;
+				}
+				this->enableAddMenu = false;
+				this->ctrl = control_t::paused;
+				this->simulation.loadSystemXml(std::string("systems/") + this->systems[system_input] + ".xml");
+				this->camera.setCenter(this->simulation.getMaxMassCoord());
+			}
+			
+			ImGui::TreePop();
 		}
 
 		/*Свойста тел:*/
@@ -331,11 +376,18 @@ void SimulationState::updateEditSim()
 						this->simulation.setObjects()[i]->setType(SpaceObj::obj_t(index_type));
 					}
 
-					if (ImGui::InputDouble(this->locale->get_c("x"), &this->simulation.setObjects()[i]->setX())) { isUpdate = true; }
-					if (ImGui::InputDouble(this->locale->get_c("y"), &this->simulation.setObjects()[i]->setY())) { isUpdate = true; }
-					if (ImGui::InputDouble(this->locale->get_c("vx"), &this->simulation.setObjects()[i]->setVx())) { isUpdate = true; }
-					if (ImGui::InputDouble(this->locale->get_c("vy"), &this->simulation.setObjects()[i]->setVy())) { isUpdate = true; }
-					if (ImGui::InputDouble(this->locale->get_c("r"), &this->simulation.setObjects()[i]->setRadius())) { isUpdate = true; }
+					if (ImGui::InputDouble(this->locale->get_c("x"), &this->simulation.setObjects()[i]->setX(), 1., 1.0, "%.3f")) { isUpdate = true; }
+					if (ImGui::InputDouble(this->locale->get_c("y"), &this->simulation.setObjects()[i]->setY(), 1., 1.0, "%.3f")) { isUpdate = true; }
+					if (ImGui::InputDouble(this->locale->get_c("vx"), &this->simulation.setObjects()[i]->setVx(), 0.5, 1.0, "%.3f")) { isUpdate = true; }
+					if (ImGui::InputDouble(this->locale->get_c("vy"), &this->simulation.setObjects()[i]->setVy(), 0.5, 1.0, "%.3f")) { isUpdate = true; }
+					if (ImGui::InputDouble(this->locale->get_c("r"), &this->simulation.setObjects()[i]->setRadius(), 1., 1.0, "%.3f"))
+					{ 
+						if (this->simulation.setObjects()[i]->setRadius() < 0.)
+						{
+							this->simulation.setObjects()[i]->setRadius() = 0.;
+						}
+						isUpdate = true; 
+					}
 
 					if (isUpdate)
 					{
@@ -386,11 +438,17 @@ void SimulationState::updateAddObj()
 			this->add_obj->setType(SpaceObj::obj_t(index_type));
 		}
 
-		ImGui::InputDouble(this->locale->get_c("x"), &this->add_obj->setX());
-		ImGui::InputDouble(this->locale->get_c("y"), &this->add_obj->setY());
-		ImGui::InputDouble(this->locale->get_c("vx"), &this->add_obj->setVx());
-		ImGui::InputDouble(this->locale->get_c("vy"), &this->add_obj->setVy());
-		ImGui::InputDouble(this->locale->get_c("r"), &this->add_obj->setRadius());
+		ImGui::InputDouble(this->locale->get_c("x"), &this->add_obj->setX(), 1., 1.0, "%.3f");
+		ImGui::InputDouble(this->locale->get_c("y"), &this->add_obj->setY(), 1., 1.0, "%.3f");
+		ImGui::InputDouble(this->locale->get_c("vx"), &this->add_obj->setVx(), 1., 1.0, "%.3f");
+		ImGui::InputDouble(this->locale->get_c("vy"), &this->add_obj->setVy(), 1., 1.0, "%.3f");
+		if (ImGui::InputDouble(this->locale->get_c("r"), &this->add_obj->setRadius(), 1., 1.0, "%.3f"))
+		{
+			if (this->add_obj->setRadius() < 0.)
+			{
+				this->add_obj->setRadius() = 0.;
+			}
+		}
 
 		ImGui::Columns(2);
 		if (ImGui::Button(this->locale->get_c("save_add")))
@@ -425,6 +483,11 @@ void SimulationState::update(const float& dt)
 
 	if (this->add_obj)
 		add_obj->update();
+
+	if (this->isAlwaysCenter)
+	{
+		this->camera.setCenter(this->simulation.getMaxMassCoord());
+	}
 }
 
 void SimulationState::render(sf::RenderTarget* target)

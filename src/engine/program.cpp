@@ -126,7 +126,6 @@ void Program::updateDt_ImGui()
 {
 	sf::Time t{ this->dtClock.restart() };
 	this->dt = t.asSeconds();
-	//std::cout << this->dt << std::endl;
 	ImGui::SFML::Update(*this->window, t);
 }
 
@@ -146,6 +145,7 @@ void Program::updateSFMLEvents()
 void Program::update()
 {
 	this->updateSFMLEvents();
+	this->updateDt_ImGui();
 
 	if (!this->states.empty())
 	{
@@ -188,7 +188,6 @@ void Program::run()
 {
 	while (this->window->isOpen())
 	{
-		this->updateDt_ImGui();
 		this->update();
 		this->render();
 	}

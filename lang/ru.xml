@@ -29,14 +29,15 @@
     <pause>Пауза</pause>
     <reload>Восст. исх. сост.</reload>
     <center>Центрировать</center>
+    <always_center>Всегда центр.</always_center>
     <play>Симулировать</play>
-    <play_koef>Симулировать с коэф.</play_koef>
+    <play_koef>Симул. с коэф.</play_koef>
     <koef>Коэффициент</koef>
     <system>Система</system>
     <enable_play>Включить контроль над симуляцией</enable_play>
     <enable_edit>Включить редактирование симуляции</enable_edit>
     <desc>Описание системы</desc>
-    <add>Начать/закончить добавление обхекта</add>
+    <add>Начать/закончить добавление объекта</add>
     <save_system>Сохранить систему</save_system>
     <objects>Объекты</objects>
     <object>Объект</object>
@@ -57,5 +58,8 @@
     <satellite>Спутник</satellite>
     <dwarf_planet>Карликовая планета</dwarf_planet>
     <asteroid>Астероид</asteroid>
+    <load_system>Загрузить систему</load_system>
+    <available_system>Доступные системы</available_system>
+    <load>Загрузить</load>
   </simulation>
 </text>
