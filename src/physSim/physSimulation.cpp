@@ -44,7 +44,7 @@ void PhysSimulation::loadSystemXml(const std::string& path)
 			this->planetsSave.push_back(new SpaceObj(*tmp));
 		}
 		this->systemName = { sys.FirstChildElement("system")->FirstChildElement("system_name")->GetText() };
-		this->systemDescription = { sys.FirstChildElement("system")->FirstChildElement("description")->GetText() };
+		this->systemDescription = { sys.FirstChildElement("system")->FirstChildElement("description")->GetText() ? sys.FirstChildElement("system")->FirstChildElement("description")->GetText() : "NONE" };
 	}
 	else
 	{
@@ -184,6 +184,11 @@ sf::Vector2f PhysSimulation::getMaxMassCoord() const
 const std::string& PhysSimulation::getName() const
 {
 	return this->systemName;
+}
+
+const std::string& PhysSimulation::getDesc() const
+{
+	return this->systemDescription;
 }
 
 const size_t& PhysSimulation::getCountObj() const

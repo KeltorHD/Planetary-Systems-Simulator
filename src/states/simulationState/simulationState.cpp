@@ -34,6 +34,9 @@ void SimulationState::initVariables()
 		this->type_names[i][tmp.length()] = 0;
 	}
 	std::copy(this->simulation.getName().begin(), this->simulation.getName().end(), this->input_name);
+	this->input_name[this->simulation.getName().length()] = 0;
+	std::copy(this->simulation.getDesc().begin(), this->simulation.getDesc().end(), this->input_desc);
+	this->input_desc[this->simulation.getDesc().length()] = 0;
 
 	std::vector<std::string> v;
 	for (const auto& entry : std::filesystem::directory_iterator("systems/"))
@@ -89,12 +92,12 @@ SimulationState::~SimulationState()
 {
 	for (size_t i = 0; i < size_t(SpaceObj::obj_t::count); i++)
 	{
-		delete this->type_names[i];
+		delete[] this->type_names[i];
 	}
-	delete this->type_names;
-	delete this->input_name;
-	delete this->input_desc;
-	delete this->edit_name_obj;
+	delete[] this->type_names;
+	delete[] this->input_name;
+	delete[] this->input_desc;
+	delete[] this->edit_name_obj;
 	if (this->add_obj)
 		delete this->add_obj;
 }
@@ -293,6 +296,12 @@ void SimulationState::updateEditSim()
 	/*отрисовка меню редактирования симуляцией*/
 	if (this->enableEditSimulation)
 	{
+		/*присваивание переменных*/
+		std::copy(this->simulation.getName().begin(), this->simulation.getName().end(), this->input_name);
+		this->input_name[this->simulation.getName().length()] = 0;
+		std::copy(this->simulation.getDesc().begin(), this->simulation.getDesc().end(), this->input_desc);
+		this->input_desc[this->simulation.getDesc().length()] = 0;
+
 		ImGui::Begin(this->locale->get_c("edit_simulation"), &this->enableEditSimulation);
 
 		ImGui::Text(this->locale->get_c("info"));
