@@ -84,6 +84,13 @@ void PhysSimulation::loadDemoSystem()
 	}
 }
 
+void PhysSimulation::createSystem(const std::string& name, const std::string& desc)
+{
+	this->clear();
+	this->systemName = name;
+	this->systemDescription = desc;
+}
+
 void PhysSimulation::saveSystemXml(const std::string& path) const
 {
 	using namespace tinyxml2;
@@ -216,6 +223,14 @@ std::vector<SpaceObj*> PhysSimulation::setObjects() const
 	return this->planetsSim;
 }
 
+void PhysSimulation::deleteObj(size_t i)
+{
+	if (i < this->planetsSim.size())
+	{
+		this->planetsSim.erase(this->planetsSim.begin() + i);
+	}
+}
+
 void PhysSimulation::restoreInitialState()
 {
 	for (size_t i = 0; i < this->planetsSim.size(); i++)
@@ -256,6 +271,32 @@ void PhysSimulation::update(const float& dt)
 		{
 			this->calcVxAndX(this->planetsSim[j], dt);
 			this->calcVyAndY(this->planetsSim[j], dt);
+			for (size_t k = 0; k < this->planetsSim.size(); k++)
+			{
+				if (k != j)
+				{
+					if (std::hypot(this->planetsSim[k]->x - this->planetsSim[j]->x, this->planetsSim[k]->y - this->planetsSim[j]->y) < this->planetsSim[j]->radius + this->planetsSim[k]->radius)
+					{
+						if (this->planetsSim[k]->mass != this->planetsSim[j]->mass)
+						{
+							auto ptr_max = this->planetsSim[k]->mass < this->planetsSim[j]->mass ? this->planetsSim[j] : this->planetsSim[k];
+							auto ptr_min = this->planetsSim[k]->mass < this->planetsSim[j]->mass ? this->planetsSim[k] : this->planetsSim[j];
+							size_t max_mass = this->planetsSim[k]->mass < this->planetsSim[j]->mass ? j : k;
+							size_t min_mass = this->planetsSim[k]->mass < this->planetsSim[j]->mass ? k : j;
+
+							ptr_max->mass = ptr_max->mass + ptr_min->mass;
+							ptr_max->radius = std::sqrt(ptr_max->radius * ptr_max->radius + ptr_min->radius * ptr_min->radius);
+							this->planetsSim.erase(this->planetsSim.begin() + min_mass);
+						}
+						else
+						{
+							this->planetsSim[k]->mass = this->planetsSim[k]->mass + this->planetsSim[j]->mass;
+							this->planetsSim[k]->radius = std::sqrt(this->planetsSim[k]->radius * this->planetsSim[k]->radius + this->planetsSim[j]->radius * this->planetsSim[j]->radius);
+							this->planetsSim.erase(this->planetsSim.begin() + j);
+						}
+					}
+				}
+			}
 		}
 	}
 	for (size_t i = 0; i < this->planetsSim.size(); i++)

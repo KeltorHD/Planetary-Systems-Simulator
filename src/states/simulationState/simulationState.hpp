@@ -24,8 +24,8 @@ private:
 	};
 	PhysSimulation simulation;
 	sf::View camera;
-	control_t ctrl;              /*управление симуляцией: пауза, симуляция, симуляция с ускорением/замедлением*/
-	float koef;                  /*коэффициент ускорения/замедления*/
+	control_t ctrl;               /*управление симуляцией: пауза, симуляция, симуляция с ускорением/замедлением*/
+	float koef;                   /*коэффициент ускорения/замедления*/
 
 	/*для GUI*/
 	bool enableControlSimulation; /*манипулирование симуляцией*/
@@ -33,6 +33,8 @@ private:
 	bool isAlwaysCenter;          /*всегда ли камера на самом массивном объекте*/
 	char* input_name;             /*имя системы*/
 	char* input_desc;             /*описание системы*/
+	char* new_system_name;        /*имя новой системы*/
+	char* new_system_desc;        /*описание новой системы*/
 	bool isAdding;                /*режим ли добавления тела?*/
 	bool enableAddMenu;           /*включено ли меню добавления объекта*/
 	SpaceObj* add_obj;            /*добавляемый объект*/

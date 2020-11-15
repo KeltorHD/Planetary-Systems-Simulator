@@ -45,6 +45,7 @@
     <object_name>Object name</object_name>
     <object_color>Object color</object_color>
     <object_type>Object type</object_type>
+    <mass>Mass</mass>
     <x>X</x>
     <y>Y</y>
     <vx>Vx</vx>
@@ -52,6 +53,7 @@
     <r>R</r>
     <adding_object>Adding an object</adding_object>
     <save_add>Save</save_add>
+    <delete>Delete</delete>
     <del_close>Delete and close</del_close>
     <star>Star</star>
     <planet>Planet</planet>
@@ -61,5 +63,7 @@
     <load_system>Load system</load_system>
     <available_system>Available systems</available_system>
     <load>Load</load>
+    <new_system>Create system</new_system>
+    <new>Create</new>
   </simulation>
 </text>

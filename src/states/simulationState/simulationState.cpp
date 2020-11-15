@@ -21,6 +21,8 @@ void SimulationState::initVariables()
 	this->add_obj = nullptr;
 	this->enableAddMenu = false;
 	this->koef = 0.1f;
+	this->new_system_name = new char[256]{ 0 };
+	this->new_system_desc = new char[256]{ 0 };
 	this->input_name = new char[256]{ 0 };
 	this->input_desc = new char[256]{ 0 };
 	this->edit_name_obj = new char[256]{ 0 };
@@ -94,6 +96,8 @@ SimulationState::~SimulationState()
 	{
 		delete[] this->type_names[i];
 	}
+	delete[] this->new_system_name;
+	delete[] this->new_system_desc;
 	delete[] this->type_names;
 	delete[] this->input_name;
 	delete[] this->input_desc;
@@ -285,7 +289,7 @@ void SimulationState::updateControlSim()
 		ImGui::Columns(1);
 		ImGui::Separator();
 
-		ImGui::SliderFloat(this->locale->get_c("koef"), &this->koef, 0.1f, 10.f);
+		ImGui::SliderFloat(this->locale->get_c("koef"), &this->koef, 0.1f, 10.f, "%.3f");
 
 		ImGui::End();
 	}
@@ -325,6 +329,7 @@ void SimulationState::updateEditSim()
 		}
 		if (ImGui::Button(this->locale->get_c("save_system")))
 		{
+			this->simulation.replaceSimtoSave();
 			this->simulation.saveSystemXml();
 		}
 
@@ -347,6 +352,30 @@ void SimulationState::updateEditSim()
 				this->camera.setCenter(this->simulation.getMaxMassCoord());
 			}
 			
+			ImGui::TreePop();
+		}
+		if (ImGui::TreeNode(this->locale->get_c("new_system"))) /*создание системы*/
+		{
+			/*название системы*/
+			ImGui::InputText(this->locale->get_c("name"), this->new_system_name, 256, ImGuiInputTextFlags_CallbackCharFilter, FilterImGuiLetters);
+
+			/*описание системы*/
+			ImGui::InputText(this->locale->get_c("desc"), this->new_system_desc, 256);
+
+			if (ImGui::Button(this->locale->get_c("new")) && std::strlen(this->new_system_name))
+			{
+				this->isAdding = false;
+				if (this->add_obj)
+				{
+					delete this->add_obj;
+					this->add_obj = nullptr;
+				}
+				this->enableAddMenu = false;
+				this->ctrl = control_t::paused;
+				this->simulation.createSystem(this->new_system_name, this->new_system_desc);
+				this->camera.setCenter(this->simulation.getMaxMassCoord());
+			}
+
 			ImGui::TreePop();
 		}
 
@@ -385,22 +414,22 @@ void SimulationState::updateEditSim()
 						this->simulation.setObjects()[i]->setType(SpaceObj::obj_t(index_type));
 					}
 
-					if (ImGui::InputDouble(this->locale->get_c("x"), &this->simulation.setObjects()[i]->setX(), 1., 1.0, "%.3f")) { isUpdate = true; }
-					if (ImGui::InputDouble(this->locale->get_c("y"), &this->simulation.setObjects()[i]->setY(), 1., 1.0, "%.3f")) { isUpdate = true; }
-					if (ImGui::InputDouble(this->locale->get_c("vx"), &this->simulation.setObjects()[i]->setVx(), 0.5, 1.0, "%.3f")) { isUpdate = true; }
-					if (ImGui::InputDouble(this->locale->get_c("vy"), &this->simulation.setObjects()[i]->setVy(), 0.5, 1.0, "%.3f")) { isUpdate = true; }
+					ImGui::InputDouble(this->locale->get_c("mass"), &this->simulation.setObjects()[i]->setMass(), 10., 50.0, "%.3f");
+					ImGui::InputDouble(this->locale->get_c("x"), &this->simulation.setObjects()[i]->setX(), 1., 1.0, "%.3f");
+					ImGui::InputDouble(this->locale->get_c("y"), &this->simulation.setObjects()[i]->setY(), 1., 1.0, "%.3f");
+					ImGui::InputDouble(this->locale->get_c("vx"), &this->simulation.setObjects()[i]->setVx(), 0.5, 1.0, "%.3f");
+					ImGui::InputDouble(this->locale->get_c("vy"), &this->simulation.setObjects()[i]->setVy(), 0.5, 1.0, "%.3f");
 					if (ImGui::InputDouble(this->locale->get_c("r"), &this->simulation.setObjects()[i]->setRadius(), 1., 1.0, "%.3f"))
 					{ 
 						if (this->simulation.setObjects()[i]->setRadius() < 0.)
 						{
 							this->simulation.setObjects()[i]->setRadius() = 0.;
 						}
-						isUpdate = true; 
 					}
 
-					if (isUpdate)
+					if (ImGui::Button(this->locale->get_c("delete")))
 					{
-						this->simulation.replaceSimtoSave();
+						this->simulation.deleteObj(i);
 					}
 
 					ImGui::TreePop();

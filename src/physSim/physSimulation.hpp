@@ -19,8 +19,14 @@ public:
 	/*функции*/
 	void loadSystemXml(const std::string& path);
 	void loadDemoSystem();
+	void createSystem(const std::string& name, const std::string& desc);
 	void saveSystemXml(const std::string& path) const;
 	void saveSystemXml() const;
+
+	void deleteObj(size_t i);   /*удалить i-тый объект*/
+	void restoreInitialState(); /*восстановление системы в том состоянии, какое было на момент загрузки*/
+	void replaceSimtoSave();    /*объекты из симуляции становятся в вектор для сохранения*/
+	void addObj(SpaceObj obj);  /*добавить новый объект в симуляцию*/
 
 	/*get*/
 	sf::Vector2f getMaxMassCoord() const;
@@ -34,9 +40,6 @@ public:
 	void setDescription(const char* desc);
 	std::vector<SpaceObj*> setObjects() const;
 
-	void restoreInitialState(); /*восстановление системы в том состоянии, какое было на момент загрузки*/
-	void replaceSimtoSave();    /*объекты из симуляции становятся в вектор для сохранения*/
-	void addObj(SpaceObj obj); /*добавить новый объект в симуляцию*/
 
 	void update(const float& dt);
 	void render(sf::RenderTarget* target);

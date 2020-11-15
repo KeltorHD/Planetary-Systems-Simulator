@@ -45,6 +45,7 @@
     <object_name>Имя объекта</object_name>
     <object_color>Цвет объекта</object_color>
     <object_type>Тип Объекта</object_type>
+    <mass>Масса</mass>
     <x>X</x>
     <y>Y</y>
     <vx>Vx</vx>
@@ -53,6 +54,7 @@
     <adding_object>Добавление объекта</adding_object>
     <save_add>Сохранить</save_add>
     <del_close>Удалить и закрыть</del_close>
+    <delete>Удалить</delete>
     <star>Звезда</star>
     <planet>Планета</planet>
     <satellite>Спутник</satellite>
@@ -61,5 +63,7 @@
     <load_system>Загрузить систему</load_system>
     <available_system>Доступные системы</available_system>
     <load>Загрузить</load>
+    <new_system>Создать систему</new_system>
+    <new>Создать</new>
   </simulation>
 </text>
