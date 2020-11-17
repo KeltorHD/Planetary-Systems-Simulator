@@ -14,14 +14,14 @@
   </menu>
   <simulation>
     <help>Помощь</help>
-    <move_up>Переместить камеру вверх: W</move_up>
-    <move_down>Переместить камеру вниз: S</move_down>
-    <move_left>Переместить камеру влево: A</move_left>
-    <move_right>Переместить камеру вправо: D</move_right>
-    <move_scroll_up>Увеличить пространство: +/PgUp</move_scroll_up>
-    <move_scroll_down>Уменьшить пространство: -/PgDn</move_scroll_down>
-    <center_mass>Центрировать камеру на самое масс. тело: C</center_mass>
-    <reload_help>Восстановить исходное состояние тел: R</reload_help>
+    <move_up>Переместить камеру вверх</move_up>
+    <move_down>Переместить камеру вниз</move_down>
+    <move_left>Переместить камеру влево</move_left>
+    <move_right>Переместить камеру вправо</move_right>
+    <move_scroll_up>Увеличить пространство</move_scroll_up>
+    <move_scroll_down>Уменьшить пространство</move_scroll_down>
+    <center_mass>Центрировать камеру на самое масс. тело</center_mass>
+    <reload_help>Восстановить исходное состояние тел</reload_help>
     <control_simulation>Контроль над симуляцией</control_simulation>
     <edit_simulation>Редактирование симуляции</edit_simulation>
     <info>Информация</info>
@@ -65,5 +65,8 @@
     <load>Загрузить</load>
     <new_system>Создать систему</new_system>
     <new>Создать</new>
+    <escape>Выйти</escape>
+    <play_pause_help>Сим-вать/Остановить сим-цию</play_pause_help>
+    <always_center_help>Всегда центрировать</always_center_help>
   </simulation>
 </text>

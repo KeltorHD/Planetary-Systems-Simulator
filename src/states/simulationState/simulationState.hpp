@@ -22,6 +22,10 @@ private:
 		play,
 		play_koef
 	};
+
+	float keyTime;
+	float keyTimeMax;
+
 	PhysSimulation simulation;
 	sf::View camera;
 	control_t ctrl;               /*управление симуляцией: пауза, симуляция, симуляция с ускорением/замедлением*/
@@ -38,6 +42,7 @@ private:
 	bool isAdding;                /*режим ли добавления тела?*/
 	bool enableAddMenu;           /*включено ли меню добавления объекта*/
 	SpaceObj* add_obj;            /*добавляемый объект*/
+	SpaceObj* open_edit_menu;     /*если не nullptr, открываем соответствующее меню изменения*/
 	char* edit_name_obj;          /*изменение имени объекта*/
 	char** type_names;            /*имена всех типов объектов*/
 	char** systems;               /*доступные системы для загрузки*/
@@ -46,6 +51,8 @@ private:
 	void initVariables();
 	void initKeybinds();
 
+	const bool getKeyTime();
+
 	//func
 	void updateInput(const float& dt);
 	void updateGUI();
@@ -53,5 +60,7 @@ private:
 	void updateControlSim();
 	void updateEditSim();
 	void updateAddObj();
+
+	void updateKeyTime(const float& dt);
 	void update(const float& dt);
 };

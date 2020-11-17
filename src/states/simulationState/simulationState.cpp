@@ -19,6 +19,7 @@ void SimulationState::initVariables()
 	this->isAlwaysCenter = false;
 	this->isAdding = false;
 	this->add_obj = nullptr;
+	this->open_edit_menu = nullptr;
 	this->enableAddMenu = false;
 	this->koef = 0.1f;
 	this->new_system_name = new char[256]{ 0 };
@@ -83,9 +84,21 @@ void SimulationState::initKeybinds()
 	ifs.close();
 }
 
+const bool SimulationState::getKeyTime()
+{
+	if (this->keyTime >= keyTimeMax)
+	{
+		this->keyTime = 0.f;
+		return true;
+	}
+	return false;
+}
+
 SimulationState::SimulationState(StateData* state_data)
 	: State(state_data)
 {
+	this->keyTime = 0.f;
+	this->keyTimeMax = 10.f;
 	this->initVariables();
 	this->initKeybinds();
 }
@@ -109,10 +122,23 @@ SimulationState::~SimulationState()
 
 void SimulationState::updateInput(const float& dt)
 {
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(this->keybinds.at("RELOAD"))))
+	/*уравление симуляцией*/
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(this->keybinds.at("RELOAD"))) && this->getKeyTime())
 	{
 		this->simulation.restoreInitialState();
 		this->ctrl = control_t::paused;
+	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(this->keybinds.at("SPACE"))) && this->getKeyTime())
+	{
+		this->ctrl = this->ctrl == control_t::paused ? control_t::play : control_t::paused;
+	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(this->keybinds.at("CAM_CENTER"))) && this->getKeyTime()) /*camera set pos at max mass object*/
+	{
+		this->camera.setCenter(this->simulation.getMaxMassCoord());
+	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(this->keybinds.at("ALWAYS_CENTER"))) && this->getKeyTime())
+	{
+		this->isAlwaysCenter = !this->isAlwaysCenter;
 	}
 
 	/*camera move update*/
@@ -131,12 +157,6 @@ void SimulationState::updateInput(const float& dt)
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(this->keybinds.at("CAM_R"))))
 	{
 		this->camera.move(camera_move * dt, 0);
-	}
-
-	/*camera set pos at max mass object*/
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(this->keybinds.at("CAM_CENTER"))))
-	{
-		this->camera.setCenter(this->simulation.getMaxMassCoord());
 	}
 
 	/*camera scroll*/
@@ -187,6 +207,26 @@ void SimulationState::updateInput(const float& dt)
 			this->add_obj->setY() = static_cast<double>(this->window->mapPixelToCoords(sf::Mouse::getPosition(*this->window)).y);
 		}
 	}
+	else if (isLeftPress)
+	{
+		bool isFind{ false };
+		/*поиск объекта, на который нажали*/
+		for (size_t i = 0; i < this->simulation.getCountObj(); i++)
+		{
+			if (std::sqrt
+			(
+				std::pow(this->window->mapPixelToCoords(sf::Mouse::getPosition(*this->window)).x - this->simulation.getObjects()[i]->getX(), 2)
+				+
+				std::pow(this->window->mapPixelToCoords(sf::Mouse::getPosition(*this->window)).y - this->simulation.getObjects()[i]->getY(), 2)
+			) <= this->simulation.getObjects()[i]->getRadius())
+			{
+				this->open_edit_menu = this->simulation.getObjects()[i];
+				isFind = true;
+			}
+		}
+		if (!isFind)
+			this->open_edit_menu = nullptr;
+	}
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(this->keybinds.at("CLOSE"))))
 	{
@@ -228,18 +268,24 @@ void SimulationState::updateMainMenuBar()
 			{
 				this->enableEditSimulation = true;
 			}
+			if (ImGui::MenuItem(this->locale->get_c("escape"), "Esc"))
+			{
+				this->endState();
+			}
 			ImGui::EndMenu();
 		}
 		if (ImGui::BeginMenu(this->locale->get_c("help")))
 		{
-			ImGui::MenuItem(this->locale->get_c("move_up"));
-			ImGui::MenuItem(this->locale->get_c("move_down"));
-			ImGui::MenuItem(this->locale->get_c("move_left"));
-			ImGui::MenuItem(this->locale->get_c("move_right"));
-			ImGui::MenuItem(this->locale->get_c("move_scroll_up"));
-			ImGui::MenuItem(this->locale->get_c("move_scroll_down"));
-			ImGui::MenuItem(this->locale->get_c("center_mass"));
-			ImGui::MenuItem(this->locale->get_c("reload_help"));
+			ImGui::MenuItem(this->locale->get_c("move_up"), "W");
+			ImGui::MenuItem(this->locale->get_c("move_down"), "S");
+			ImGui::MenuItem(this->locale->get_c("move_left"), "A");
+			ImGui::MenuItem(this->locale->get_c("move_right"), "D");
+			ImGui::MenuItem(this->locale->get_c("move_scroll_up"), "+");
+			ImGui::MenuItem(this->locale->get_c("move_scroll_down"), "-");
+			ImGui::MenuItem(this->locale->get_c("center_mass"), "C");
+			ImGui::MenuItem(this->locale->get_c("reload_help"), "R");
+			ImGui::MenuItem(this->locale->get_c("play_pause_help"), "Space");
+			ImGui::MenuItem(this->locale->get_c("always_center_help"), "X");
 			ImGui::EndMenu();
 		}
 		ImGui::EndMainMenuBar();
@@ -254,35 +300,35 @@ void SimulationState::updateControlSim()
 		ImGui::Begin(this->locale->get_c("control_simulation"), &this->enableControlSimulation);
 
 		ImGui::Columns(3, "control", false);
-		
-		if (ImGui::Button(this->locale->get_c("play")))
+
+		if (ImGui::Button(this->locale->get_c("play"), ImVec2(ImGui::GetContentRegionAvail().x, 0)))
 		{
 			this->ctrl = control_t::play;
 		}
 		ImGui::NextColumn();
-		if (ImGui::Button(this->locale->get_c("pause")))
+		if (ImGui::Button(this->locale->get_c("pause"), ImVec2(ImGui::GetContentRegionAvail().x, 0)))
 		{
 			this->ctrl = control_t::paused;
 		}
 		ImGui::NextColumn();
-		if (ImGui::Button(this->locale->get_c("play_koef")))
+		if (ImGui::Button(this->locale->get_c("play_koef"), ImVec2(ImGui::GetContentRegionAvail().x, 0)))
 		{
 			this->ctrl = control_t::play_koef;
 		}
 		ImGui::NextColumn();
 		ImGui::Separator();
-		if (ImGui::Button(this->locale->get_c("reload")))
+		if (ImGui::Button(this->locale->get_c("reload"), ImVec2(ImGui::GetContentRegionAvail().x, 0)))
 		{
 			this->simulation.restoreInitialState();
 			this->ctrl = control_t::paused;
 		}
 		ImGui::NextColumn();
-		if (ImGui::Button(this->locale->get_c("center")))
+		if (ImGui::Button(this->locale->get_c("center"), ImVec2(ImGui::GetContentRegionAvail().x, 0)))
 		{
 			this->camera.setCenter(this->simulation.getMaxMassCoord());
 		}
 		ImGui::NextColumn();
-		if (ImGui::Button(this->locale->get_c("always_center")))
+		if (ImGui::Button(this->locale->get_c("always_center"), ImVec2(ImGui::GetContentRegionAvail().x, 0)))
 		{
 			this->isAlwaysCenter = !this->isAlwaysCenter;
 		}
@@ -311,12 +357,14 @@ void SimulationState::updateEditSim()
 		ImGui::Text(this->locale->get_c("info"));
 
 		/*название системы*/
+		ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x * 0.5f);
 		if (ImGui::InputText(this->locale->get_c("name"), this->input_name, 256, ImGuiInputTextFlags_CallbackCharFilter, FilterImGuiLetters))
 		{
 			this->simulation.setName(this->input_name);
 		}
 
 		/*описание системы*/
+		ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x * 0.5f);
 		if (ImGui::InputText(this->locale->get_c("desc"), this->input_desc, 256))
 		{
 			this->simulation.setDescription(this->input_desc);
@@ -336,6 +384,7 @@ void SimulationState::updateEditSim()
 		if (ImGui::TreeNode(this->locale->get_c("load_system"))) /*загрузка системы*/
 		{
 			static int system_input{};
+			ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x * 0.4f);
 			ImGui::Combo(this->locale->get_c("available_system"), &system_input, this->systems, this->systems_length);
 
 			if (ImGui::Button(this->locale->get_c("load")))
@@ -346,6 +395,7 @@ void SimulationState::updateEditSim()
 					delete this->add_obj;
 					this->add_obj = nullptr;
 				}
+				this->open_edit_menu = nullptr;
 				this->enableAddMenu = false;
 				this->ctrl = control_t::paused;
 				this->simulation.loadSystemXml(std::string("systems/") + this->systems[system_input] + ".xml");
@@ -357,9 +407,11 @@ void SimulationState::updateEditSim()
 		if (ImGui::TreeNode(this->locale->get_c("new_system"))) /*создание системы*/
 		{
 			/*название системы*/
+			ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x * 0.5f);
 			ImGui::InputText(this->locale->get_c("name"), this->new_system_name, 256, ImGuiInputTextFlags_CallbackCharFilter, FilterImGuiLetters);
 
 			/*описание системы*/
+			ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x * 0.5f);
 			ImGui::InputText(this->locale->get_c("desc"), this->new_system_desc, 256);
 
 			if (ImGui::Button(this->locale->get_c("new")) && std::strlen(this->new_system_name))
@@ -371,6 +423,7 @@ void SimulationState::updateEditSim()
 					this->add_obj = nullptr;
 				}
 				this->enableAddMenu = false;
+				this->open_edit_menu = nullptr;
 				this->ctrl = control_t::paused;
 				this->simulation.createSystem(this->new_system_name, this->new_system_desc);
 				this->camera.setCenter(this->simulation.getMaxMassCoord());
@@ -380,14 +433,28 @@ void SimulationState::updateEditSim()
 		}
 
 		/*Свойста тел:*/
+		if (this->open_edit_menu) /*открываем, если нажали на объект*/
+		{
+			ImGui::SetNextItemOpen(true, ImGuiCond_Always);
+		}
 		if (ImGui::TreeNode(this->locale->get_c("objects")))
 		{
+			//this->open_edit_menu = nullptr;
 			static ImVec4 color{};
 			static int index_type{};
 			for (size_t i = 0; i < this->simulation.getCountObj(); i++)
 			{
+				if (this->simulation.getObjects()[i] == this->open_edit_menu) /*открываем, если нажали на объект*/
+				{
+					ImGui::SetNextItemOpen(true, ImGuiCond_Always);
+				}
+				else if (this->open_edit_menu)
+				{
+					ImGui::SetNextItemOpen(false, ImGuiCond_Always);
+				}
 				if (ImGui::TreeNode(std::string(this->locale->get_s("object") + " " + std::to_string(i + 1)).c_str()))
 				{
+					this->open_edit_menu = nullptr;
 					/*присваивание переменных*/
 					bool isUpdate{ false };
 					color = ImVec4(this->simulation.getObjects()[i]->getColor());
@@ -396,6 +463,7 @@ void SimulationState::updateEditSim()
 
 					ImGui::Text(this->locale->get_c("characteristics")); /*характеристики*/
 
+					ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x * 0.5f);
 					if (ImGui::InputText(this->locale->get_c("object_name"), this->edit_name_obj, 256)) /*имя тела*/
 					{
 						this->simulation.setObjects()[i]->setName(this->edit_name_obj);
@@ -419,6 +487,7 @@ void SimulationState::updateEditSim()
 					ImGui::InputDouble(this->locale->get_c("y"), &this->simulation.setObjects()[i]->setY(), 1., 1.0, "%.3f");
 					ImGui::InputDouble(this->locale->get_c("vx"), &this->simulation.setObjects()[i]->setVx(), 0.5, 1.0, "%.3f");
 					ImGui::InputDouble(this->locale->get_c("vy"), &this->simulation.setObjects()[i]->setVy(), 0.5, 1.0, "%.3f");
+
 					if (ImGui::InputDouble(this->locale->get_c("r"), &this->simulation.setObjects()[i]->setRadius(), 1., 1.0, "%.3f"))
 					{ 
 						if (this->simulation.setObjects()[i]->setRadius() < 0.)
@@ -426,10 +495,12 @@ void SimulationState::updateEditSim()
 							this->simulation.setObjects()[i]->setRadius() = 0.;
 						}
 					}
+					ImGui::PopItemWidth();
 
 					if (ImGui::Button(this->locale->get_c("delete")))
 					{
 						this->simulation.deleteObj(i);
+						this->open_edit_menu = nullptr;
 					}
 
 					ImGui::TreePop();
@@ -458,6 +529,7 @@ void SimulationState::updateAddObj()
 
 		ImGui::Text(this->locale->get_c("characteristics")); /*характеристики*/
 
+		ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x * 0.5f);
 		if (ImGui::InputText(this->locale->get_c("object_name"), this->edit_name_obj, 256)) /*имя тела*/
 		{
 			this->add_obj->setName(this->edit_name_obj);
@@ -476,10 +548,13 @@ void SimulationState::updateAddObj()
 			this->add_obj->setType(SpaceObj::obj_t(index_type));
 		}
 
+		ImGui::InputDouble(this->locale->get_c("mass"), &this->add_obj->setMass(), 10., 50.0, "%.3f");
 		ImGui::InputDouble(this->locale->get_c("x"), &this->add_obj->setX(), 1., 1.0, "%.3f");
 		ImGui::InputDouble(this->locale->get_c("y"), &this->add_obj->setY(), 1., 1.0, "%.3f");
 		ImGui::InputDouble(this->locale->get_c("vx"), &this->add_obj->setVx(), 1., 1.0, "%.3f");
 		ImGui::InputDouble(this->locale->get_c("vy"), &this->add_obj->setVy(), 1., 1.0, "%.3f");
+		ImGui::PopItemWidth();
+
 		if (ImGui::InputDouble(this->locale->get_c("r"), &this->add_obj->setRadius(), 1., 1.0, "%.3f"))
 		{
 			if (this->add_obj->setRadius() < 0.)
@@ -488,7 +563,6 @@ void SimulationState::updateAddObj()
 			}
 		}
 
-		ImGui::Columns(2);
 		if (ImGui::Button(this->locale->get_c("save_add")))
 		{
 			this->simulation.addObj(*this->add_obj);
@@ -496,21 +570,27 @@ void SimulationState::updateAddObj()
 			this->add_obj = nullptr;
 			this->isAdding = false;
 		}
-		ImGui::NextColumn();
+		ImGui::SameLine();
 		if (ImGui::Button(this->locale->get_c("del_close")))
 		{
 			delete this->add_obj;
 			this->add_obj = nullptr;
 			this->isAdding = false;
 		}
-		ImGui::Columns(1);
 
 		ImGui::End();
 	}
 }
 
+void SimulationState::updateKeyTime(const float& dt)
+{
+	if (this->keyTime < this->keyTimeMax)
+		this->keyTime += 50.f * dt;
+}
+
 void SimulationState::update(const float& dt)
 {
+	this->updateKeyTime(dt);
 	if (this->ctrl != control_t::paused)
 	{
 		this->simulation.update((this->ctrl == control_t::play_koef ? this->koef : 1.f) * 2.f * dt);
