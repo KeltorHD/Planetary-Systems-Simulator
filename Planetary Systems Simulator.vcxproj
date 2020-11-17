@@ -159,6 +159,7 @@
     <ClCompile Include="external\imgui-1.79\imgui_draw.cpp" />
     <ClCompile Include="external\imgui-1.79\imgui_widgets.cpp" />
     <ClCompile Include="external\tinyxml2\tinyxml2.cpp" />
+    <ClCompile Include="src\states\simulationState\gui.cpp" />
     <ClCompile Include="src\localisation\locale.cpp" />
     <ClCompile Include="src\physSim\physSimulation.cpp" />
     <ClCompile Include="src\states\mainMenuState\mainMenuState.cpp" />
@@ -180,6 +181,7 @@
     <ClInclude Include="external\imgui-1.79\imstb_textedit.h" />
     <ClInclude Include="external\imgui-1.79\imstb_truetype.h" />
     <ClInclude Include="external\tinyxml2\tinyxml2.h" />
+    <ClInclude Include="src\states\simulationState\gui.h" />
     <ClInclude Include="src\localisation\locale.hpp" />
     <ClInclude Include="src\physSim\physSimulation.hpp" />
     <ClInclude Include="src\states\mainMenuState\mainMenuState.hpp" />
