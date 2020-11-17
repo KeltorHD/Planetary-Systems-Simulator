@@ -456,7 +456,6 @@ void SimulationState::updateEditSim()
 				{
 					this->open_edit_menu = nullptr;
 					/*присваивание переменных*/
-					bool isUpdate{ false };
 					color = ImVec4(this->simulation.getObjects()[i]->getColor());
 					std::fill(this->edit_name_obj, this->edit_name_obj + 256, 0);
 					std::copy(this->simulation.getObjects()[i]->getName().begin(), this->simulation.getObjects()[i]->getName().end(), this->edit_name_obj);
@@ -467,18 +466,15 @@ void SimulationState::updateEditSim()
 					if (ImGui::InputText(this->locale->get_c("object_name"), this->edit_name_obj, 256)) /*имя тела*/
 					{
 						this->simulation.setObjects()[i]->setName(this->edit_name_obj);
-						isUpdate = true;
 					}
 
 					if (ImGui::ColorEdit3(this->locale->get_c("object_color"), (float*)&color))  /*цвет*/
-					{ 
-						isUpdate = true; 
+					{  
 						this->simulation.setObjects()[i]->setColor(static_cast<sf::Color>(color));
 					}
 
 					if (ImGui::Combo(this->locale->get_c("object_type"), &index_type, this->type_names, static_cast<int>(SpaceObj::obj_t::count)))
 					{
-						isUpdate = true;
 						this->simulation.setObjects()[i]->setType(SpaceObj::obj_t(index_type));
 					}
 
