@@ -60,7 +60,7 @@ void Program::initKeys()
 		int value = 0;
 		while (ifs >> key >> value)
 		{
-			this->supportedKeys[key] = value;
+			this->supportedKeys[key] = std::move(value);
 		}
 	}
 

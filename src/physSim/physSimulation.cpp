@@ -198,12 +198,12 @@ const std::string& PhysSimulation::getDesc() const
 	return this->systemDescription;
 }
 
-const size_t& PhysSimulation::getCountObj() const
+const size_t PhysSimulation::getCountObj() const
 {
 	return this->planetsSim.size();
 }
 
-const std::vector<SpaceObj*> PhysSimulation::getObjects() const
+const std::vector<SpaceObj*>& PhysSimulation::getObjects() const
 {
 	return this->planetsSim;
 }

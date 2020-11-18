@@ -27,7 +27,7 @@ void SimulationState::initKeybinds()
 		std::string key2 = "";
 		while (ifs >> key >> key2)
 		{
-			this->keybinds[key] = this->supportedKeys->at(key2);
+			this->keybinds[key] = this->supportedKeys->at(std::move(key2));
 		}
 	}
 

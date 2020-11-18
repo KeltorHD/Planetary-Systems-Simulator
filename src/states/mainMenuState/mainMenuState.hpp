@@ -4,14 +4,14 @@
 #include "physSim/physSimulation.hpp"
 #include "states/simulationState/simulationState.hpp"
 
-class MainMenuState :
+class MainMenuState final:
 	public State
 {
 public:
 	MainMenuState(StateData* state_data);
 	virtual ~MainMenuState();
 
-	void render(sf::RenderTarget* target = nullptr);
+	void render(sf::RenderTarget* target = nullptr) override;
 
 private:
 	PhysSimulation simulation;
@@ -28,8 +28,8 @@ private:
 	void initKeybinds();
 
 	//func
-	void updateInput(const float& dt);
+	void updateInput(const float& dt) override;
 	void updateGUI();
 	void updateSettingsGUI();
-	void update(const float& dt);
+	void update(const float& dt) override;
 };

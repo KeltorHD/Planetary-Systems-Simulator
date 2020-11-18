@@ -3,7 +3,7 @@
 
 static int FilterImGuiLetters(ImGuiInputTextCallbackData* data)
 {
-	if (data->EventChar < 256 && strchr(" 0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZабвгдеёжзийклмнопрстуфхцчшщъыьэюяАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ", (char)data->EventChar))
+	if (data->EventChar < 256 && strchr(" 0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZР°Р±РІРіРґРµС‘Р¶Р·РёР№РєР»РјРЅРѕРїСЂСЃС‚СѓС„С…С†С‡С€С‰СЉС‹СЊСЌСЋСЏРђР‘Р’Р“Р”Р•РЃР–Р—РР™РљР›РњРќРћРџР РЎРўРЈР¤РҐР¦Р§РЁР©РЄР«Р¬Р­Р®РЇ", (char)data->EventChar))
 		return 0;
 	return 1;
 }
@@ -46,7 +46,7 @@ Gui::Gui(PhysSimulation* phys, const Locale* locale, sf::View& camera, bool& qui
 		(
 			entry.path().string().find_last_of('/') + 1, entry.path().string().size() - entry.path().string().find_last_of('/') - 5
 		);
-		v.push_back(tmp);
+		v.push_back(std::move(tmp));
 	}
 	this->systems_length = v.size();
 	this->systems = new char* [this->systems_length];
@@ -93,7 +93,7 @@ void Gui::updateInput(sf::RenderWindow* window, std::queue<sf::Event>& events)
 		{
 			this->add_obj = new SpaceObj
 			(
-				static_cast<double>((rand() % 100) + 1),
+				static_cast<double>(int(rand() % 100) + 1),
 				static_cast<double>(window->mapPixelToCoords(sf::Mouse::getPosition(*window)).x),
 				static_cast<double>(window->mapPixelToCoords(sf::Mouse::getPosition(*window)).y),
 				static_cast<double>(rand() % 10),
@@ -111,10 +111,10 @@ void Gui::updateInput(sf::RenderWindow* window, std::queue<sf::Event>& events)
 			this->add_obj->setY() = static_cast<double>(window->mapPixelToCoords(sf::Mouse::getPosition(*window)).y);
 		}
 	}
-	else if (isLeftPress) /*открытие меню изменения добавленного объекта*/
+	else if (isLeftPress) /*РѕС‚РєСЂС‹С‚РёРµ РјРµРЅСЋ РёР·РјРµРЅРµРЅРёСЏ РґРѕР±Р°РІР»РµРЅРЅРѕРіРѕ РѕР±СЉРµРєС‚Р°*/
 	{
 		bool isFind{ false };
-		/*поиск объекта, на который нажали*/
+		/*РїРѕРёСЃРє РѕР±СЉРµРєС‚Р°, РЅР° РєРѕС‚РѕСЂС‹Р№ РЅР°Р¶Р°Р»Рё*/
 		for (size_t i = 0; i < this->simulation->getCountObj(); i++)
 		{
 			if (std::sqrt
@@ -135,19 +135,19 @@ void Gui::updateInput(sf::RenderWindow* window, std::queue<sf::Event>& events)
 
 void Gui::update()
 {
-	/*отрисовка меню вверху экрана*/
+	/*РѕС‚СЂРёСЃРѕРІРєР° РјРµРЅСЋ РІРІРµСЂС…Сѓ СЌРєСЂР°РЅР°*/
 	this->updateMainMenuBar();
 
-	/*отрисовка меню управления симуляцией*/
+	/*РѕС‚СЂРёСЃРѕРІРєР° РјРµРЅСЋ СѓРїСЂР°РІР»РµРЅРёСЏ СЃРёРјСѓР»СЏС†РёРµР№*/
 	this->updateControlSim();
 
-	/*отрисовка меню редактирования симуляцией*/
+	/*РѕС‚СЂРёСЃРѕРІРєР° РјРµРЅСЋ СЂРµРґР°РєС‚РёСЂРѕРІР°РЅРёСЏ СЃРёРјСѓР»СЏС†РёРµР№*/
 	this->updateEditSim();
 
-	/*отрисовка меню добавления объекта*/
+	/*РѕС‚СЂРёСЃРѕРІРєР° РјРµРЅСЋ РґРѕР±Р°РІР»РµРЅРёСЏ РѕР±СЉРµРєС‚Р°*/
 	this->updateAddObj();
 
-	if (this->add_obj) /*обновление добавляемого объекта*/
+	if (this->add_obj) /*РѕР±РЅРѕРІР»РµРЅРёРµ РґРѕР±Р°РІР»СЏРµРјРѕРіРѕ РѕР±СЉРµРєС‚Р°*/
 		add_obj->update();
 }
 
@@ -189,7 +189,7 @@ void Gui::setAlwaysCenter(bool cond)
 
 void Gui::updateMainMenuBar()
 {
-	/*отрисовка меню вверху экрана*/
+	/*РѕС‚СЂРёСЃРѕРІРєР° РјРµРЅСЋ РІРІРµСЂС…Сѓ СЌРєСЂР°РЅР°*/
 	if (ImGui::BeginMainMenuBar())
 	{
 		if (ImGui::BeginMenu(this->locale->get_c("system")))
@@ -228,7 +228,7 @@ void Gui::updateMainMenuBar()
 
 void Gui::updateControlSim()
 {
-	/*Контролирование процессом симуляции*/
+	/*РљРѕРЅС‚СЂРѕР»РёСЂРѕРІР°РЅРёРµ РїСЂРѕС†РµСЃСЃРѕРј СЃРёРјСѓР»СЏС†РёРё*/
 	if (this->enableControlSimulation)
 	{
 		ImGui::Begin(this->locale->get_c("control_simulation"), &this->enableControlSimulation);
@@ -277,10 +277,10 @@ void Gui::updateControlSim()
 
 void Gui::updateEditSim()
 {
-	/*отрисовка меню редактирования симуляцией*/
+	/*РѕС‚СЂРёСЃРѕРІРєР° РјРµРЅСЋ СЂРµРґР°РєС‚РёСЂРѕРІР°РЅРёСЏ СЃРёРјСѓР»СЏС†РёРµР№*/
 	if (this->enableEditSimulation)
 	{
-		/*присваивание переменных*/
+		/*РїСЂРёСЃРІР°РёРІР°РЅРёРµ РїРµСЂРµРјРµРЅРЅС‹С…*/
 		std::copy(this->simulation->getName().begin(), this->simulation->getName().end(), this->input_name);
 		this->input_name[this->simulation->getName().length()] = 0;
 		std::copy(this->simulation->getDesc().begin(), this->simulation->getDesc().end(), this->input_desc);
@@ -290,21 +290,21 @@ void Gui::updateEditSim()
 
 		ImGui::Text(this->locale->get_c("info"));
 
-		/*название системы*/
+		/*РЅР°Р·РІР°РЅРёРµ СЃРёСЃС‚РµРјС‹*/
 		ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x * 0.5f);
 		if (ImGui::InputText(this->locale->get_c("name"), this->input_name, 256, ImGuiInputTextFlags_CallbackCharFilter, FilterImGuiLetters))
 		{
 			this->simulation->setName(this->input_name);
 		}
 
-		/*описание системы*/
+		/*РѕРїРёСЃР°РЅРёРµ СЃРёСЃС‚РµРјС‹*/
 		ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x * 0.5f);
 		if (ImGui::InputText(this->locale->get_c("desc"), this->input_desc, 256))
 		{
 			this->simulation->setDescription(this->input_desc);
 		}
 
-		/*Кнопки создать тело и сохранить систему*/
+		/*РљРЅРѕРїРєРё СЃРѕР·РґР°С‚СЊ С‚РµР»Рѕ Рё СЃРѕС…СЂР°РЅРёС‚СЊ СЃРёСЃС‚РµРјСѓ*/
 		if (ImGui::Button(this->locale->get_c("add")))
 		{
 			this->isAdding = !this->isAdding;
@@ -315,7 +315,7 @@ void Gui::updateEditSim()
 			this->simulation->saveSystemXml();
 		}
 
-		if (ImGui::TreeNode(this->locale->get_c("load_system"))) /*загрузка системы*/
+		if (ImGui::TreeNode(this->locale->get_c("load_system"))) /*Р·Р°РіСЂСѓР·РєР° СЃРёСЃС‚РµРјС‹*/
 		{
 			static int system_input{};
 			ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x * 0.4f);
@@ -338,13 +338,13 @@ void Gui::updateEditSim()
 
 			ImGui::TreePop();
 		}
-		if (ImGui::TreeNode(this->locale->get_c("new_system"))) /*создание системы*/
+		if (ImGui::TreeNode(this->locale->get_c("new_system"))) /*СЃРѕР·РґР°РЅРёРµ СЃРёСЃС‚РµРјС‹*/
 		{
-			/*название системы*/
+			/*РЅР°Р·РІР°РЅРёРµ СЃРёСЃС‚РµРјС‹*/
 			ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x * 0.5f);
 			ImGui::InputText(this->locale->get_c("name"), this->new_system_name, 256, ImGuiInputTextFlags_CallbackCharFilter, FilterImGuiLetters);
 
-			/*описание системы*/
+			/*РѕРїРёСЃР°РЅРёРµ СЃРёСЃС‚РµРјС‹*/
 			ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x * 0.5f);
 			ImGui::InputText(this->locale->get_c("desc"), this->new_system_desc, 256);
 
@@ -366,8 +366,8 @@ void Gui::updateEditSim()
 			ImGui::TreePop();
 		}
 
-		/*Свойста тел:*/
-		if (this->open_edit_menu) /*открываем, если нажали на объект*/
+		/*РЎРІРѕР№СЃС‚Р° С‚РµР»:*/
+		if (this->open_edit_menu) /*РѕС‚РєСЂС‹РІР°РµРј, РµСЃР»Рё РЅР°Р¶Р°Р»Рё РЅР° РѕР±СЉРµРєС‚*/
 		{
 			ImGui::SetNextItemOpen(true, ImGuiCond_Always);
 		}
@@ -378,7 +378,7 @@ void Gui::updateEditSim()
 			static int index_type{};
 			for (size_t i = 0; i < this->simulation->getCountObj(); i++)
 			{
-				if (this->simulation->getObjects()[i] == this->open_edit_menu) /*открываем, если нажали на объект*/
+				if (this->simulation->getObjects()[i] == this->open_edit_menu) /*РѕС‚РєСЂС‹РІР°РµРј, РµСЃР»Рё РЅР°Р¶Р°Р»Рё РЅР° РѕР±СЉРµРєС‚*/
 				{
 					ImGui::SetNextItemOpen(true, ImGuiCond_Always);
 				}
@@ -389,20 +389,20 @@ void Gui::updateEditSim()
 				if (ImGui::TreeNode(std::string(this->locale->get_s("object") + " " + std::to_string(i + 1)).c_str()))
 				{
 					this->open_edit_menu = nullptr;
-					/*присваивание переменных*/
+					/*РїСЂРёСЃРІР°РёРІР°РЅРёРµ РїРµСЂРµРјРµРЅРЅС‹С…*/
 					color = ImVec4(this->simulation->getObjects()[i]->getColor());
 					std::fill(this->edit_name_obj, this->edit_name_obj + 256, 0);
 					std::copy(this->simulation->getObjects()[i]->getName().begin(), this->simulation->getObjects()[i]->getName().end(), this->edit_name_obj);
 
-					ImGui::Text(this->locale->get_c("characteristics")); /*характеристики*/
+					ImGui::Text(this->locale->get_c("characteristics")); /*С…Р°СЂР°РєС‚РµСЂРёСЃС‚РёРєРё*/
 
 					ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x * 0.5f);
-					if (ImGui::InputText(this->locale->get_c("object_name"), this->edit_name_obj, 256)) /*имя тела*/
+					if (ImGui::InputText(this->locale->get_c("object_name"), this->edit_name_obj, 256)) /*РёРјСЏ С‚РµР»Р°*/
 					{
 						this->simulation->setObjects()[i]->setName(this->edit_name_obj);
 					}
 
-					if (ImGui::ColorEdit3(this->locale->get_c("object_color"), (float*)&color))  /*цвет*/
+					if (ImGui::ColorEdit3(this->locale->get_c("object_color"), (float*)&color))  /*С†РІРµС‚*/
 					{
 						this->simulation->setObjects()[i]->setColor(static_cast<sf::Color>(color));
 					}
@@ -445,28 +445,28 @@ void Gui::updateEditSim()
 
 void Gui::updateAddObj()
 {
-	/*начало меню добавления планеты*/
+	/*РЅР°С‡Р°Р»Рѕ РјРµРЅСЋ РґРѕР±Р°РІР»РµРЅРёСЏ РїР»Р°РЅРµС‚С‹*/
 	if (this->isAdding && this->add_obj && ImGui::Begin(this->locale->get_c("adding_object")))
 	{
 		static ImVec4 color{};
 		static int index_type{};
 
-		/*присваивание переменных*/
+		/*РїСЂРёСЃРІР°РёРІР°РЅРёРµ РїРµСЂРµРјРµРЅРЅС‹С…*/
 		bool isUpdate{ false };
 		color = ImVec4(this->add_obj->getColor());
 		std::fill(this->edit_name_obj, this->edit_name_obj + 256, 0);
 		std::copy(this->add_obj->getName().begin(), add_obj->getName().end(), this->edit_name_obj);
 
-		ImGui::Text(this->locale->get_c("characteristics")); /*характеристики*/
+		ImGui::Text(this->locale->get_c("characteristics")); /*С…Р°СЂР°РєС‚РµСЂРёСЃС‚РёРєРё*/
 
 		ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x * 0.5f);
-		if (ImGui::InputText(this->locale->get_c("object_name"), this->edit_name_obj, 256)) /*имя тела*/
+		if (ImGui::InputText(this->locale->get_c("object_name"), this->edit_name_obj, 256)) /*РёРјСЏ С‚РµР»Р°*/
 		{
 			this->add_obj->setName(this->edit_name_obj);
 			isUpdate = true;
 		}
 
-		if (ImGui::ColorEdit3(this->locale->get_c("object_color"), (float*)&color))  /*цвет*/
+		if (ImGui::ColorEdit3(this->locale->get_c("object_color"), (float*)&color))  /*С†РІРµС‚*/
 		{
 			isUpdate = true;
 			this->add_obj->setColor(static_cast<sf::Color>(color));

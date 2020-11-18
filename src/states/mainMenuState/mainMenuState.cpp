@@ -16,7 +16,7 @@ void MainMenuState::initVariables()
 		(
 			entry.path().string().find_last_of('/') + 1, entry.path().string().size() - entry.path().string().find_last_of('/') - 5
 		);
-		v.push_back(tmp);
+		v.push_back(std::move(tmp));
 	}
 	this->langs_length = v.size();
 	this->langs = new char* [this->langs_length];
@@ -60,7 +60,7 @@ void MainMenuState::initKeybinds()
 		std::string key2 = "";
 		while (ifs >> key >> key2)
 		{
-			this->keybinds[key] = this->supportedKeys->at(key2);
+			this->keybinds[key] = this->supportedKeys->at(std::move(key2));
 		}
 	}
 

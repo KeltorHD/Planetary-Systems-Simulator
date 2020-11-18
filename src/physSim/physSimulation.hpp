@@ -32,8 +32,8 @@ public:
 	sf::Vector2f getMaxMassCoord() const;
 	const std::string& getName() const;
 	const std::string& getDesc() const;
-	const size_t& getCountObj() const;
-	const std::vector<SpaceObj*> getObjects() const;
+	const size_t getCountObj() const;
+	const std::vector<SpaceObj*>& getObjects() const;
 
 	/*set*/
 	void setName(const char* name);

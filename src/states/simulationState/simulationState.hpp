@@ -7,14 +7,14 @@
 static const int camera_move = 80;
 static const float camera_scroll = 0.004f;
 
-class SimulationState :
+class SimulationState final:
 	public State
 {
 public:
 	SimulationState(StateData* state_data);
 	virtual ~SimulationState();
 
-	void render(sf::RenderTarget* target = nullptr);
+	void render(sf::RenderTarget* target = nullptr) override;
 
 private:
 	float keyTime;
@@ -30,9 +30,9 @@ private:
 	const bool getKeyTime();
 
 	//func
-	void updateInput(const float& dt);
+	void updateInput(const float& dt) override;
 	void updateGUI();
 
 	void updateKeyTime(const float& dt);
-	void update(const float& dt);
+	void update(const float& dt) override;
 };
