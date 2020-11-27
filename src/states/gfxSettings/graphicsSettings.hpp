@@ -18,6 +18,10 @@ public:
 	int fontSize;
 
 	//func
-	void saveXml(const std::string path);
-	void loadXml(const std::string path);
+	void saveXml(const std::string& path);
+	void loadXml(const std::string& path);
+
+private:
+	void firstRun(const std::string& path);
+	void createXml(const std::string& path);
 };

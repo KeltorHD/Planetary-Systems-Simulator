@@ -13,7 +13,9 @@ int main()
     }
     catch (std::string e)
     {
-        std::cerr << e << std::endl;
+        std::ofstream ofs("error.log");
+        ofs << e << std::endl;
+        ofs.close();
     }
 
     return 0;

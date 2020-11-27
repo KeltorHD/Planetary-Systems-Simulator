@@ -166,7 +166,7 @@ void PhysSimulation::saveSystemXml(const std::string& path) const
 	sys.InsertEndChild(system);
 
 	if (sys.SaveFile(path.c_str()) != XML_SUCCESS)
-		throw "NOT LOAD FILE " + path;
+		throw "NOT SAVE FILE " + path;
 }
 
 void PhysSimulation::saveSystemXml() const
