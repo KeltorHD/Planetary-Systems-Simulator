@@ -28,15 +28,15 @@ void MainMenuState::initVariables()
 	}
 
 	/*режимы видео*/
-	this->vmodes_length = this->stateData->gfxSettings->videoModes.size();
+	this->vmodes_length = this->stateData->programSettings->videoModes.size();
 	this->vmodes = new char* [this->vmodes_length];
 	for (size_t i = 0; i < vmodes_length; i++)
 	{
 		std::string tmp
 		{
-			std::to_string(this->stateData->gfxSettings->videoModes[i].width) +
+			std::to_string(this->stateData->programSettings->videoModes[i].width) +
 			"*" +
-			std::to_string(this->stateData->gfxSettings->videoModes[i].height)
+			std::to_string(this->stateData->programSettings->videoModes[i].height)
 		};
 		this->vmodes[i] = new char[tmp.length() + 1];
 		std::copy(tmp.begin(), tmp.end(), this->vmodes[i]);
@@ -45,8 +45,8 @@ void MainMenuState::initVariables()
 
 	this->camera.setSize
 	(
-		static_cast<float>(this->stateData->gfxSettings->resolution.width),
-		static_cast<float>(this->stateData->gfxSettings->resolution.height)
+		static_cast<float>(this->stateData->programSettings->resolution.width),
+		static_cast<float>(this->stateData->programSettings->resolution.height)
 	);
 }
 
@@ -107,16 +107,19 @@ void MainMenuState::updateGUI()
 
 	if (ImGui::Button(this->locale->get_c("simulation")))
 	{
+		this->soundManager->play("click");
 		this->states->push(new SimulationState(this->stateData));
 	}
 
 	if (ImGui::Button(this->locale->get_c("settings")))
 	{
+		this->soundManager->play("click");
 		this->isSettings = true;
 	}
 
 	if (ImGui::Button(this->locale->get_c("quit")))
 	{
+		this->soundManager->play("click");
 		this->endState();
 	}
 	ImGui::Text("FPS: %.1f", ImGui::GetIO().Framerate);
@@ -143,14 +146,17 @@ void MainMenuState::updateSettingsGUI()
 	{
 		std::distance
 		(
-			this->stateData->gfxSettings->videoModes.begin(),
-			std::find(this->stateData->gfxSettings->videoModes.begin(), this->stateData->gfxSettings->videoModes.end(), this->stateData->gfxSettings->resolution)
+			this->stateData->programSettings->videoModes.begin(),
+			std::find(this->stateData->programSettings->videoModes.begin(), this->stateData->programSettings->videoModes.end(), this->stateData->programSettings->resolution)
 		)
 	};
 	/*текущий режим полного экрана*/
-	static bool fullscreen{ this->stateData->gfxSettings->fullscreen };
+	static bool fullscreen{ this->stateData->programSettings->fullscreen };
 	/*текущий шрифт*/
-	static int font_size{ this->stateData->gfxSettings->fontSize };
+	static int font_size{ this->stateData->programSettings->fontSize };
+	/*текущий уровень громкости*/
+	static int sound_volume{ static_cast<int>(this->stateData->programSettings->soundVolume) };
+	static int music_volume{ static_cast<int>(this->stateData->programSettings->musicVolume) };
 
 	ImGui::Begin(this->locale->get_c("settings"), &this->isSettings);
 
@@ -162,18 +168,23 @@ void MainMenuState::updateSettingsGUI()
 
 	ImGui::SliderInt(this->locale->get_c("font_size"), &font_size, 12, 40);
 
+	ImGui::SliderInt(this->locale->get_c("sound_volume"), &sound_volume, 0, 100);
+
+	ImGui::SliderInt(this->locale->get_c("music_volume"), &music_volume, 0, 100);
+
 	if (ImGui::Button(this->locale->get_c("save"))) /*сохраняем изменения*/
 	{
+		this->soundManager->play("click");
 		if (std::string(this->langs[selected_lang]) != this->locale->get_lang()) /*язык*/
 		{
 			this->locale->loadLocaleXml(std::string("lang/") + this->langs[selected_lang] + ".xml");
-			this->stateData->gfxSettings->lang = this->langs[selected_lang];
+			this->stateData->programSettings->lang = this->langs[selected_lang];
 		}
-		if (fullscreen != this->stateData->gfxSettings->fullscreen
-			|| this->stateData->gfxSettings->videoModes[selected_resolution] != this->stateData->gfxSettings->resolution) /*полноэкранный режим или изменение разрешения*/
+		if (fullscreen != this->stateData->programSettings->fullscreen
+			|| this->stateData->programSettings->videoModes[selected_resolution] != this->stateData->programSettings->resolution) /*полноэкранный режим или изменение разрешения*/
 		{
-			this->stateData->gfxSettings->resolution = this->stateData->gfxSettings->videoModes[selected_resolution];
-			this->stateData->gfxSettings->fullscreen = fullscreen;
+			this->stateData->programSettings->resolution = this->stateData->programSettings->videoModes[selected_resolution];
+			this->stateData->programSettings->fullscreen = fullscreen;
 
 			sf::String title = sf::String::fromUtf8
 			(
@@ -181,22 +192,22 @@ void MainMenuState::updateSettingsGUI()
 				this->stateData->locale->get_s("program_title").end()
 			);
 			sf::ContextSettings st;
-			st.antialiasingLevel = this->stateData->gfxSettings->antialiasingLevel;
+			st.antialiasingLevel = this->stateData->programSettings->antialiasingLevel;
 			this->window->close();
 			if (fullscreen)
 				this->window->create
 				(
-					this->stateData->gfxSettings->resolution, title, sf::Style::Fullscreen, st
+					this->stateData->programSettings->resolution, title, sf::Style::Fullscreen, st
 				);
 			else
 				this->window->create
 				(
-					this->stateData->gfxSettings->resolution, title, sf::Style::Titlebar | sf::Style::Close, st
+					this->stateData->programSettings->resolution, title, sf::Style::Titlebar | sf::Style::Close, st
 				);
 		}
-		if (font_size != this->stateData->gfxSettings->fontSize) /*изменение размера шрифта*/
+		if (font_size != this->stateData->programSettings->fontSize) /*изменение размера шрифта*/
 		{
-			this->stateData->gfxSettings->fontSize = font_size;
+			this->stateData->programSettings->fontSize = font_size;
 
 			ImGui::GetIO().Fonts->AddFontFromFileTTF
 			(
@@ -205,13 +216,18 @@ void MainMenuState::updateSettingsGUI()
 
 			ImGui::SFML::UpdateFontTexture();
 		}
+		/*изменяем громкость*/
+		this->stateData->programSettings->soundVolume = static_cast<float>(sound_volume);
+		this->stateData->programSettings->musicVolume = static_cast<float>(music_volume);
+		this->stateData->soundManager->setVolume("backmusic", this->stateData->programSettings->musicVolume);
+		this->stateData->soundManager->setVolume("click", this->stateData->programSettings->soundVolume);
 
 		this->camera.setSize /*изменяем камеру*/
 		(
-			static_cast<float>(this->stateData->gfxSettings->resolution.width),
-			static_cast<float>(this->stateData->gfxSettings->resolution.height)
+			static_cast<float>(this->stateData->programSettings->resolution.width),
+			static_cast<float>(this->stateData->programSettings->resolution.height)
 		);
-		this->stateData->gfxSettings->saveXml("config/settings.xml"); /*сохраняем в файлик*/
+		this->stateData->programSettings->saveXml("config/settings.xml"); /*сохраняем в файлик*/
 	}
 
 	ImGui::End();

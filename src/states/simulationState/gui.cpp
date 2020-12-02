@@ -8,8 +8,8 @@ static int FilterImGuiLetters(ImGuiInputTextCallbackData* data)
 	return 1;
 }
 
-Gui::Gui(PhysSimulation* phys, const Locale* locale, sf::View& camera, bool& quit)
-	: camera(camera), simulation(phys), locale(locale), quit(quit)
+Gui::Gui(PhysSimulation* phys, const Locale* locale, SoundManager* soundManager, sf::View& camera, bool& quit)
+	: camera(camera), simulation(phys), locale(locale), quit(quit), soundManager(soundManager)
 {
 	this->ctrl = control_t::paused;
 	this->enableControlSimulation = true;
@@ -89,6 +89,7 @@ void Gui::updateInput(sf::RenderWindow* window, std::queue<sf::Event>& events)
 	}
 	if (this->isAdding && isLeftPress)
 	{
+		this->soundManager->play("click");
 		if (!this->add_obj)
 		{
 			this->add_obj = new SpaceObj
@@ -124,6 +125,7 @@ void Gui::updateInput(sf::RenderWindow* window, std::queue<sf::Event>& events)
 				std::pow(window->mapPixelToCoords(sf::Mouse::getPosition(*window)).y - this->simulation->getObjects()[i]->getY(), 2)
 			) <= this->simulation->getObjects()[i]->getRadius())
 			{
+				this->soundManager->play("click");
 				this->open_edit_menu = this->simulation->getObjects()[i];
 				isFind = true;
 			}
@@ -196,14 +198,17 @@ void Gui::updateMainMenuBar()
 		{
 			if (ImGui::MenuItem(this->locale->get_c("enable_play")))
 			{
+				this->soundManager->play("click");
 				this->enableControlSimulation = true;
 			}
 			if (ImGui::MenuItem(this->locale->get_c("enable_edit")))
 			{
+				this->soundManager->play("click");
 				this->enableEditSimulation = true;
 			}
 			if (ImGui::MenuItem(this->locale->get_c("escape"), "Esc"))
 			{
+				this->soundManager->play("click");
 				this->quit = true;
 			}
 			ImGui::EndMenu();
@@ -237,33 +242,39 @@ void Gui::updateControlSim()
 
 		if (ImGui::Button(this->locale->get_c("play"), ImVec2(ImGui::GetContentRegionAvail().x, 0)))
 		{
+			this->soundManager->play("click");
 			this->ctrl = control_t::play;
 		}
 		ImGui::NextColumn();
 		if (ImGui::Button(this->locale->get_c("pause"), ImVec2(ImGui::GetContentRegionAvail().x, 0)))
 		{
+			this->soundManager->play("click");
 			this->ctrl = control_t::paused;
 		}
 		ImGui::NextColumn();
 		if (ImGui::Button(this->locale->get_c("play_koef"), ImVec2(ImGui::GetContentRegionAvail().x, 0)))
 		{
+			this->soundManager->play("click");
 			this->ctrl = control_t::play_koef;
 		}
 		ImGui::NextColumn();
 		ImGui::Separator();
 		if (ImGui::Button(this->locale->get_c("reload"), ImVec2(ImGui::GetContentRegionAvail().x, 0)))
 		{
+			this->soundManager->play("click");
 			this->simulation->restoreInitialState();
 			this->ctrl = control_t::paused;
 		}
 		ImGui::NextColumn();
 		if (ImGui::Button(this->locale->get_c("center"), ImVec2(ImGui::GetContentRegionAvail().x, 0)))
 		{
+			this->soundManager->play("click");
 			this->camera.setCenter(this->simulation->getMaxMassCoord());
 		}
 		ImGui::NextColumn();
 		if (ImGui::Button(this->locale->get_c("always_center"), ImVec2(ImGui::GetContentRegionAvail().x, 0)))
 		{
+			this->soundManager->play("click");
 			this->isAlwaysCenter = !this->isAlwaysCenter;
 		}
 		ImGui::Columns(1);
@@ -307,10 +318,12 @@ void Gui::updateEditSim()
 		/*Кнопки создать тело и сохранить систему*/
 		if (ImGui::Button(this->locale->get_c("add")))
 		{
+			this->soundManager->play("click");
 			this->isAdding = !this->isAdding;
 		}
 		if (ImGui::Button(this->locale->get_c("save_system")))
 		{
+			this->soundManager->play("click");
 			this->simulation->replaceSimtoSave();
 			this->simulation->saveSystemXml();
 		}
@@ -323,6 +336,7 @@ void Gui::updateEditSim()
 
 			if (ImGui::Button(this->locale->get_c("load")))
 			{
+				this->soundManager->play("click");
 				this->isAdding = false;
 				if (this->add_obj)
 				{
@@ -350,6 +364,7 @@ void Gui::updateEditSim()
 
 			if (ImGui::Button(this->locale->get_c("new")) && std::strlen(this->new_system_name))
 			{
+				this->soundManager->play("click");
 				this->isAdding = false;
 				if (this->add_obj)
 				{
@@ -429,6 +444,7 @@ void Gui::updateEditSim()
 
 					if (ImGui::Button(this->locale->get_c("delete")))
 					{
+						this->soundManager->play("click");
 						this->simulation->deleteObj(i);
 						this->open_edit_menu = nullptr;
 					}
@@ -495,6 +511,7 @@ void Gui::updateAddObj()
 
 		if (ImGui::Button(this->locale->get_c("save_add")))
 		{
+			this->soundManager->play("click");
 			this->simulation->addObj(*this->add_obj);
 			delete this->add_obj;
 			this->add_obj = nullptr;
@@ -503,6 +520,7 @@ void Gui::updateAddObj()
 		ImGui::SameLine();
 		if (ImGui::Button(this->locale->get_c("del_close")))
 		{
+			this->soundManager->play("click");
 			delete this->add_obj;
 			this->add_obj = nullptr;
 			this->isAdding = false;

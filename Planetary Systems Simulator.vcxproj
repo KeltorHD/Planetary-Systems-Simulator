@@ -95,7 +95,7 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(SolutionDir)external\SFML-2.5.1\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>sfml-graphics-d.lib;sfml-window-d.lib;sfml-system-d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>sfml-graphics-d.lib;sfml-window-d.lib;sfml-system-d.lib;sfml-audio-d.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -130,7 +130,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(SolutionDir)external\SFML-2.5.1\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>sfml-graphics.lib;sfml-window.lib;sfml-system.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>sfml-graphics.lib;sfml-window.lib;sfml-system.lib;sfml-audio.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -159,12 +159,13 @@
     <ClCompile Include="external\imgui-1.79\imgui_draw.cpp" />
     <ClCompile Include="external\imgui-1.79\imgui_widgets.cpp" />
     <ClCompile Include="external\tinyxml2\tinyxml2.cpp" />
+    <ClCompile Include="src\soundManager\soundManager.cpp" />
     <ClCompile Include="src\states\simulationState\gui.cpp" />
     <ClCompile Include="src\localisation\locale.cpp" />
     <ClCompile Include="src\physSim\physSimulation.cpp" />
     <ClCompile Include="src\states\mainMenuState\mainMenuState.cpp" />
     <ClCompile Include="src\engine\program.cpp" />
-    <ClCompile Include="src\states\gfxSettings\graphicsSettings.cpp" />
+    <ClCompile Include="src\states\programSettings\programSettings.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\pch.cpp" />
     <ClCompile Include="src\physSim\spaceObj.cpp" />
@@ -181,12 +182,13 @@
     <ClInclude Include="external\imgui-1.79\imstb_textedit.h" />
     <ClInclude Include="external\imgui-1.79\imstb_truetype.h" />
     <ClInclude Include="external\tinyxml2\tinyxml2.h" />
+    <ClInclude Include="src\soundManager\soundManager.h" />
     <ClInclude Include="src\states\simulationState\gui.h" />
     <ClInclude Include="src\localisation\locale.hpp" />
     <ClInclude Include="src\physSim\physSimulation.hpp" />
     <ClInclude Include="src\states\mainMenuState\mainMenuState.hpp" />
     <ClInclude Include="src\engine\program.hpp" />
-    <ClInclude Include="src\states\gfxSettings\graphicsSettings.hpp" />
+    <ClInclude Include="src\states\programSettings\programSettings.hpp" />
     <ClInclude Include="src\pch.h" />
     <ClInclude Include="src\physSim\spaceObj.hpp" />
     <ClInclude Include="src\states\simulationState\simulationState.hpp" />

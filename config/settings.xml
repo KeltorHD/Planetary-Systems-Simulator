@@ -9,5 +9,7 @@
     <vertical_sync>false</vertical_sync>
     <antialiasinc_level>8</antialiasinc_level>
     <lang>ru</lang>
+    <sound_volume>55</sound_volume>
+    <music_volume>85</music_volume>
     <font_size>33</font_size>
 </settings>

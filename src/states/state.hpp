@@ -1,7 +1,8 @@
 #pragma once
 
-#include "gfxSettings/graphicsSettings.hpp"
+#include "programSettings/programSettings.hpp"
 #include "localisation/locale.hpp"
+#include "soundManager/soundManager.h"
 
 class State;
 
@@ -12,10 +13,11 @@ public:
 
 	//var
 	sf::RenderWindow* window;
-	GraphicsSettings* gfxSettings;
+	ProgramSettings* programSettings;
 	std::map<std::string, int>* supportedKeys;
 	std::stack<State*>* states;
 	Locale* locale;
+	SoundManager* soundManager;
 	std::queue<sf::Event> events;
 };
 
@@ -40,6 +42,7 @@ public:
 protected:
 	StateData* stateData;
 	Locale* locale;
+	SoundManager* soundManager;
 	std::stack<State*>* states;
 
 	sf::RenderWindow* window;

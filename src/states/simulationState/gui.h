@@ -2,6 +2,7 @@
 
 #include "physSim/physSimulation.hpp"
 #include "localisation/locale.hpp"
+#include "soundManager/soundManager.h"
 
 class Gui
 {
@@ -13,7 +14,7 @@ public:
 		play_koef
 	};
 
-	Gui(PhysSimulation* phys, const Locale* locale, sf::View& camera, bool& quit);
+	Gui(PhysSimulation* phys, const Locale* locale, SoundManager* soundManager, sf::View& camera, bool& quit);
 	~Gui();
 
 	void updateInput(sf::RenderWindow* window, std::queue<sf::Event>& events);
@@ -36,6 +37,7 @@ private:
 	/*связь с simulation*/
 	PhysSimulation* simulation;
 	const Locale* locale;
+	SoundManager* soundManager;
 	sf::View& camera;
 	control_t ctrl;               /*управление симуляцией: пауза, симуляция, симуляция с ускорением/замедлением*/
 	float koef;                   /*коэффициент ускорения/замедления*/

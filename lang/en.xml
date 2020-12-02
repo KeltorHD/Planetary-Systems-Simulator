@@ -11,6 +11,8 @@
     <fullscreen>Fullscreen</fullscreen>
     <resolution>Resolution</resolution>
     <font_size>Font size</font_size>
+    <sound_volume>Sound volume</sound_volume>
+    <music_volume>Music volume</music_volume>
   </menu>
   <simulation>
     <help>Help</help>

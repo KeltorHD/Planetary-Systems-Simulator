@@ -13,7 +13,7 @@ public:
 
 private:
 	//Variables
-	GraphicsSettings gfxSettings;
+	ProgramSettings programSettings;
 	StateData stateData;
 	sf::RenderWindow* window;
 	sf::Event sfEvent;

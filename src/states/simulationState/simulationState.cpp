@@ -11,8 +11,8 @@ void SimulationState::initVariables()
 
 	this->camera.setSize
 	(
-		static_cast<float>(this->stateData->gfxSettings->resolution.width),
-		static_cast<float>(this->stateData->gfxSettings->resolution.height)
+		static_cast<float>(this->stateData->programSettings->resolution.width),
+		static_cast<float>(this->stateData->programSettings->resolution.height)
 	);
 	this->camera.setCenter(this->simulation.getMaxMassCoord());
 }
@@ -45,7 +45,7 @@ const bool SimulationState::getKeyTime()
 }
 
 SimulationState::SimulationState(StateData* state_data)
-	: State(state_data), gui(&this->simulation, this->locale, this->camera, this->quit)
+	: State(state_data), gui(&this->simulation, this->locale, this->soundManager, this->camera, this->quit)
 {
 	this->initVariables();
 	this->initKeybinds();

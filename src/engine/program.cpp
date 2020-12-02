@@ -9,14 +9,14 @@ void Program::initVariables()
 
 void Program::initGraphicsSettings()
 {
-	this->gfxSettings.loadXml("config/settings.xml");
+	this->programSettings.loadXml("config/settings.xml");
 }
 
 //Initializer func
 void Program::initWindow()
 {
 	sf::ContextSettings st;
-	st.antialiasingLevel = this->gfxSettings.antialiasingLevel;
+	st.antialiasingLevel = this->programSettings.antialiasingLevel;
 
 	sf::String title = sf::String::fromUtf8
 	(
@@ -25,14 +25,14 @@ void Program::initWindow()
 	);
 
 
-	if (this->gfxSettings.fullscreen)
+	if (this->programSettings.fullscreen)
 		this->window = new sf::RenderWindow(
-			this->gfxSettings.resolution,
+			this->programSettings.resolution,
 			title,
 			sf::Style::Fullscreen, st);
 	else
 		this->window = new sf::RenderWindow(
-			this->gfxSettings.resolution,
+			this->programSettings.resolution,
 			title,
 			sf::Style::Titlebar | sf::Style::Close, st);
 
@@ -40,12 +40,12 @@ void Program::initWindow()
 	
 	ImGui::GetIO().Fonts->AddFontFromFileTTF
 	(
-		"font/GoogleSans-Regular.ttf", static_cast<float>(this->stateData.gfxSettings->fontSize), nullptr, ImGui::GetIO().Fonts->GetGlyphRangesCyrillic()
+		"font/GoogleSans-Regular.ttf", static_cast<float>(this->stateData.programSettings->fontSize), nullptr, ImGui::GetIO().Fonts->GetGlyphRangesCyrillic()
 	);
 	ImGui::SFML::UpdateFontTexture();
 
-	this->window->setFramerateLimit(this->gfxSettings.framerateLimit);
-	this->window->setVerticalSyncEnabled(this->gfxSettings.verticalSync);
+	this->window->setFramerateLimit(this->programSettings.framerateLimit);
+	this->window->setVerticalSyncEnabled(this->programSettings.verticalSync);
 
 	this->stateData.window = this->window; /*связываем окно в program с stateData*/
 }
@@ -75,10 +75,18 @@ void Program::initKeys()
 
 void Program::initStateData()
 {
-	this->stateData.gfxSettings = &this->gfxSettings;
+	this->stateData.programSettings = &this->programSettings;
 	this->stateData.supportedKeys = &this->supportedKeys;
 	this->stateData.states = &this->states;
-	this->stateData.locale = new Locale("lang/" + this->gfxSettings.lang + ".xml");
+	this->stateData.locale = new Locale("lang/" + this->programSettings.lang + ".xml");
+
+	this->stateData.soundManager = new SoundManager("sounds/", ".wav");
+	this->stateData.soundManager->loadSound("backmusic");
+	this->stateData.soundManager->loadSound("click");
+	this->stateData.soundManager->setVolume("backmusic", this->programSettings.musicVolume);
+	this->stateData.soundManager->setVolume("click", this->programSettings.soundVolume);
+	this->stateData.soundManager->setRepeatre("backmusic", true);
+	this->stateData.soundManager->play("backmusic");
 }
 
 void Program::initStates()
@@ -109,6 +117,7 @@ Program::~Program()
 	}
 
 	delete this->stateData.locale;
+	delete this->stateData.soundManager;
 
 	delete this->window;
 }

@@ -11,6 +11,8 @@
     <fullscreen>Полноэкранный режим</fullscreen>
     <resolution>Разрешение</resolution>
     <font_size>Размер шрифта</font_size>
+    <sound_volume>Громкость звуков</sound_volume>
+    <music_volume>Громкость музыки</music_volume>
   </menu>
   <simulation>
     <help>Помощь</help>
