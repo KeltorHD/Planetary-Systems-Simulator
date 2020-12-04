@@ -138,6 +138,9 @@ std::string SpaceObj::objToString(obj_t type)
 	case SpaceObj::obj_t::dwarf_planet:
 		return std::string("dwarf_planet");
 		break;
+	case SpaceObj::obj_t::dwarf_star:
+		return std::string("dwarf_star");
+		break;
 	case SpaceObj::obj_t::asteroid:
 		return std::string("asteroid");
 		break;

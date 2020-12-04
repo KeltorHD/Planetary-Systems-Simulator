@@ -61,6 +61,7 @@
     <planet>Планета</planet>
     <satellite>Спутник</satellite>
     <dwarf_planet>Карликовая планета</dwarf_planet>
+    <dwarf_star>Карликовая звезда</dwarf_star>
     <asteroid>Астероид</asteroid>
     <load_system>Загрузить систему</load_system>
     <available_system>Доступные системы</available_system>

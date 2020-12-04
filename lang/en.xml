@@ -61,6 +61,7 @@
     <planet>Planet</planet>
     <satellite>Satellite</satellite>
     <dwarf_planet>Dwarf planet</dwarf_planet>
+    <dwarf_star>Dwarf star</dwarf_star>
     <asteroid>Asteroid</asteroid>
     <load_system>Load system</load_system>
     <available_system>Available systems</available_system>

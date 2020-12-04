@@ -11,8 +11,9 @@ public:
 		planet,
 		satellite,
 		dwarf_planet,
+		dwarf_star,
 		asteroid,
-		count = 5
+		count = 6
 	};
 
 	SpaceObj(
