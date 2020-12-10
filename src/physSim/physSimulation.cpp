@@ -271,7 +271,7 @@ void PhysSimulation::update(const float& dt)
 		{
 			this->calcVxAndX(this->planetsSim[j], dt);
 			this->calcVyAndY(this->planetsSim[j], dt);
-			for (size_t k = 0; k < this->planetsSim.size(); k++)
+			for (size_t k = 0; k < this->planetsSim.size(); k++) /*проверка на столкновение*/
 			{
 				if (k != j)
 				{

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <settings>
     <resolution>
-        <width>1920</width>
-        <height>1080</height>
+        <width>1280</width>
+        <height>720</height>
     </resolution>
-    <fullscreen>true</fullscreen>
+    <fullscreen>false</fullscreen>
     <framerate_limit>120</framerate_limit>
     <vertical_sync>false</vertical_sync>
     <antialiasinc_level>8</antialiasinc_level>

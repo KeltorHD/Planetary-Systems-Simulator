@@ -35,6 +35,12 @@ void Program::initWindow()
 			this->programSettings.resolution,
 			title,
 			sf::Style::Titlebar | sf::Style::Close, st);
+	sf::Image icon;
+	if (!icon.loadFromFile("icon/icon.png"))
+	{
+		throw "COULD NOT LOAD ICON";
+	}
+	this->window->setIcon(512, 512, icon.getPixelsPtr());
 
 	ImGui::SFML::Init(*this->window);
 	

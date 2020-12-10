@@ -125,12 +125,12 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(SolutionDir)external\SFML-2.5.1\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>sfml-graphics.lib;sfml-window.lib;sfml-system.lib;sfml-audio.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>sfml-graphics.lib;sfml-window.lib;sfml-system.lib;sfml-audio.lib;sfml-main.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -182,6 +182,7 @@
     <ClInclude Include="external\imgui-1.79\imstb_textedit.h" />
     <ClInclude Include="external\imgui-1.79\imstb_truetype.h" />
     <ClInclude Include="external\tinyxml2\tinyxml2.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="src\soundManager\soundManager.h" />
     <ClInclude Include="src\states\simulationState\gui.h" />
     <ClInclude Include="src\localisation\locale.hpp" />
@@ -193,6 +194,12 @@
     <ClInclude Include="src\physSim\spaceObj.hpp" />
     <ClInclude Include="src\states\simulationState\simulationState.hpp" />
     <ClInclude Include="src\states\state.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Planetary Systems Simulator.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="icon1.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
