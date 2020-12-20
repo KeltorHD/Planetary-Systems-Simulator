@@ -165,7 +165,7 @@
     <ClCompile Include="src\physSim\physSimulation.cpp" />
     <ClCompile Include="src\states\mainMenuState\mainMenuState.cpp" />
     <ClCompile Include="src\engine\program.cpp" />
-    <ClCompile Include="src\states\programSettings\programSettings.cpp" />
+    <ClCompile Include="src\programSettings\programSettings.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\pch.cpp" />
     <ClCompile Include="src\physSim\spaceObj.cpp" />
@@ -189,7 +189,7 @@
     <ClInclude Include="src\physSim\physSimulation.hpp" />
     <ClInclude Include="src\states\mainMenuState\mainMenuState.hpp" />
     <ClInclude Include="src\engine\program.hpp" />
-    <ClInclude Include="src\states\programSettings\programSettings.hpp" />
+    <ClInclude Include="src\programSettings\programSettings.hpp" />
     <ClInclude Include="src\pch.h" />
     <ClInclude Include="src\physSim\spaceObj.hpp" />
     <ClInclude Include="src\states\simulationState\simulationState.hpp" />

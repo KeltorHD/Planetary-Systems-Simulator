@@ -59,6 +59,8 @@ private:
 	char** type_names;            /*имена всех типов объектов*/
 	char** systems;               /*доступные системы для загрузки*/
 	size_t systems_length;        /*количество доступных систем*/
+	bool enable_trajectory;		  /*включено ли отображение траектории*/
+	bool v_to_null;               /*обнуление скорости макс. тела до 0*/
 
 	/*функции*/
 	void updateMainMenuBar();     /*обновление меню вверху экрана*/

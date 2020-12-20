@@ -66,7 +66,7 @@
     <ClCompile Include="src\soundManager\soundManager.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="src\states\programSettings\programSettings.cpp">
+    <ClCompile Include="src\programSettings\programSettings.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
   </ItemGroup>
@@ -128,10 +128,10 @@
     <ClInclude Include="src\soundManager\soundManager.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="src\states\programSettings\programSettings.hpp">
+    <ClInclude Include="resource.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="resource.h">
+    <ClInclude Include="src\programSettings\programSettings.hpp">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>

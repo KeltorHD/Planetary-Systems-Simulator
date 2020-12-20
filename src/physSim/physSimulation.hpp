@@ -6,7 +6,7 @@
 class PhysSimulation
 {
 public:
-	PhysSimulation() = default;
+	PhysSimulation();
 	~PhysSimulation();
 
 	/*удаленные конструкторы и операторы*/
@@ -36,6 +36,7 @@ public:
 	const std::vector<SpaceObj*>& getObjects() const;
 
 	/*set*/
+	void setTrajectory(bool set);
 	void setName(const char* name);
 	void setDescription(const char* desc);
 	std::vector<SpaceObj*> setObjects() const;
@@ -44,11 +45,17 @@ public:
 	void update(const float& dt);
 	void render(sf::RenderTarget* target);
 
+	/*v в 0 для максимального тела*/
+	void vToNullForMaxObj();
+
 private:
-	std::vector<SpaceObj*> planetsSim;    /*тела, участвующие в симуляции*/
-	std::vector<SpaceObj*> planetsSave;   /*тела, которые хранятся для восстановления исходного состояния*/
-	std::string systemName;               /*имя симулируемой системы*/
-	std::string systemDescription;        /*описание симулируемой системы*/
+	std::vector<SpaceObj*> planetsSim;					/*тела, участвующие в симуляции*/
+	std::vector<SpaceObj*> planetsSave;					/*тела, которые хранятся для восстановления исходного состояния*/
+	std::string systemName;								/*имя симулируемой системы*/
+	std::string systemDescription;						/*описание симулируемой системы*/
+	std::vector<std::list<sf::Vector2f>> trajectory;	/*траектория движения объектов*/
+	bool isTrajectory;									/*включено ли отображение траектории*/
+	size_t max_count_point;								/*максимальное колчиство точек в траектории*/
 
 	void clear();  /*очистка текущей системы*/
 

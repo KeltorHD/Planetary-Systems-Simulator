@@ -3,6 +3,12 @@
 
 static const char* demo_system{ "<?xml version=\"1.0\" encoding=\"UTF-8\"?><system><system_name>Base</system_name><description>Sun, Earth and Moon</description><object><name>Sun</name><type>0</type><mass>10000</mass><x>500</x><y>370</y><vx>0</vx><vy>0</vy><r>20</r><color><r>255</r><g>255</g><b>0</b></color></object><object><name>Earth</name><type>1</type><mass>200</mass><x>180</x><y>370</y><vx>0</vx><vy>-5</vy><r>7</r><color><r>0</r><g>0</g><b>255</b></color></object><object><name>Moon</name><type>2</type><mass>15</mass><x>160</x><y>370</y><vx>0</vx><vy>-8</vy><r>4</r><color><r>72</r><g>72</g><b>72</b></color></object></system>" };
 
+PhysSimulation::PhysSimulation()
+	: isTrajectory(false)
+{
+	this->max_count_point = 1;
+}
+
 PhysSimulation::~PhysSimulation()
 {
 	for (size_t i = 0; i < this->planetsSim.size(); i++)
@@ -45,6 +51,11 @@ void PhysSimulation::loadSystemXml(const std::string& path)
 		}
 		this->systemName = { sys.FirstChildElement("system")->FirstChildElement("system_name")->GetText() };
 		this->systemDescription = { sys.FirstChildElement("system")->FirstChildElement("description")->GetText() ? sys.FirstChildElement("system")->FirstChildElement("description")->GetText() : "NONE" };
+		this->trajectory.resize(this->planetsSave.size());
+		if (this->trajectory.size())
+		{
+			this->max_count_point = this->trajectory[0].max_size() / (10 * this->trajectory.size());
+		}
 	}
 	else
 	{
@@ -81,6 +92,11 @@ void PhysSimulation::loadDemoSystem()
 		}
 		this->systemName = { sys.FirstChildElement("system")->FirstChildElement("system_name")->GetText() };
 		this->systemDescription = { sys.FirstChildElement("system")->FirstChildElement("description")->GetText() };
+		this->trajectory.resize(this->planetsSave.size());
+		if (this->trajectory.size())
+		{
+			this->max_count_point = this->trajectory[0].max_size() / (10 * this->trajectory.size());
+		}
 	}
 }
 
@@ -89,6 +105,8 @@ void PhysSimulation::createSystem(const std::string& name, const std::string& de
 	this->clear();
 	this->systemName = name;
 	this->systemDescription = desc;
+	this->trajectory.resize(0);
+	this->max_count_point = 0;
 }
 
 void PhysSimulation::saveSystemXml(const std::string& path) const
@@ -208,6 +226,22 @@ const std::vector<SpaceObj*>& PhysSimulation::getObjects() const
 	return this->planetsSim;
 }
 
+void PhysSimulation::setTrajectory(bool set)
+{
+	if (set)
+	{
+		this->isTrajectory = true;
+	}
+	else
+	{
+		this->isTrajectory = false;
+		for (auto& i : this->trajectory) /*очищаем траектории*/
+		{
+			i.clear();
+		}
+	}
+}
+
 void PhysSimulation::setName(const char* name)
 {
 	this->systemName = name;
@@ -242,6 +276,10 @@ void PhysSimulation::restoreInitialState()
 	{
 		this->planetsSim.push_back(new SpaceObj(*this->planetsSave[i]));
 	}
+	for (auto& i : this->trajectory) /*очищаем траектории*/
+	{
+		i.clear();
+	}
 }
 
 void PhysSimulation::replaceSimtoSave()
@@ -261,6 +299,11 @@ void PhysSimulation::addObj(SpaceObj obj)
 {
 	this->planetsSim.push_back(new SpaceObj(obj));
 	this->planetsSave.push_back(new SpaceObj(obj));
+	this->trajectory.resize(this->trajectory.size() + 1u);
+	if (this->trajectory.size())
+	{
+		this->max_count_point = this->trajectory[0].max_size() / (10 * this->trajectory.size());
+	}
 }
 
 void PhysSimulation::update(const float& dt)
@@ -299,17 +342,50 @@ void PhysSimulation::update(const float& dt)
 			}
 		}
 	}
+	assert(this->planetsSim.size() == this->trajectory.size() && "trajectory size != planetSim size in method update");
 	for (size_t i = 0; i < this->planetsSim.size(); i++)
 	{
 		this->planetsSim[i]->update();
+		if (isTrajectory)
+		{
+			if (this->trajectory[i].size() && this->trajectory[i].size() >= this->max_count_point)
+			{
+				this->trajectory[i].pop_back();
+			}
+			this->trajectory[i].push_front(sf::Vector2f
+			(
+				static_cast<float>(this->planetsSim[i]->x), 
+				static_cast<float>(this->planetsSim[i]->y)
+			));
+		}
 	}
 }
 
 void PhysSimulation::render(sf::RenderTarget* target)
 {
+	assert(this->planetsSim.size() == this->trajectory.size() && "trajectory size != planetSim size in method render");
 	for (size_t i = 0; i < this->planetsSim.size(); i++)
 	{
+		if (this->isTrajectory)
+		{
+			sf::VertexArray tr;
+			for (const auto& i : this->trajectory[i])
+			{
+				tr.append(i);
+			}
+			target->draw(tr);
+		}
 		this->planetsSim[i]->render(target);
+	}
+}
+
+void PhysSimulation::vToNullForMaxObj()
+{
+	size_t i = std::distance(this->planetsSim.begin(), std::max_element(this->planetsSim.begin(), this->planetsSim.end(), [](const SpaceObj* o1, const SpaceObj* o2) {return o1->mass <= o2->mass; }));
+	if (i != this->planetsSim.size())
+	{
+		this->planetsSim[i]->vx = 0;
+		this->planetsSim[i]->vy = 0;
 	}
 }
 
@@ -327,6 +403,11 @@ void PhysSimulation::clear()
 	this->planetsSim.clear();
 	this->systemName = "DEFAULT";
 	this->systemDescription = "";
+	this->max_count_point = 1;
+	for (auto& i : this->trajectory)
+	{
+		i.clear();
+	}
 }
 
 double PhysSimulation::fx(const SpaceObj* obj, double locale_x) const

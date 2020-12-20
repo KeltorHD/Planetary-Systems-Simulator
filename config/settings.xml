@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <settings>
     <resolution>
-        <width>1280</width>
-        <height>720</height>
+        <width>1920</width>
+        <height>1080</height>
     </resolution>
-    <fullscreen>false</fullscreen>
+    <fullscreen>true</fullscreen>
     <framerate_limit>120</framerate_limit>
     <vertical_sync>false</vertical_sync>
     <antialiasinc_level>8</antialiasinc_level>
     <lang>ru</lang>
     <sound_volume>55</sound_volume>
-    <music_volume>85</music_volume>
+    <music_volume>0</music_volume>
     <font_size>33</font_size>
 </settings>

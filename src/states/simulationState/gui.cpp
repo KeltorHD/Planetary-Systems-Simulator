@@ -11,6 +11,8 @@ static int FilterImGuiLetters(ImGuiInputTextCallbackData* data)
 Gui::Gui(PhysSimulation* phys, const Locale* locale, SoundManager* soundManager, sf::View& camera, bool& quit)
 	: camera(camera), simulation(phys), locale(locale), quit(quit), soundManager(soundManager)
 {
+	this->enable_trajectory = false;
+	this->v_to_null = false;
 	this->ctrl = control_t::paused;
 	this->enableControlSimulation = true;
 	this->enableEditSimulation = true;
@@ -137,6 +139,10 @@ void Gui::updateInput(sf::RenderWindow* window, std::queue<sf::Event>& events)
 
 void Gui::update()
 {
+	/*обнуление скоростей для тела с макс массой*/
+	if (this->v_to_null)
+		this->simulation->vToNullForMaxObj();
+
 	/*отрисовка меню вверху экрана*/
 	this->updateMainMenuBar();
 
@@ -227,6 +233,10 @@ void Gui::updateMainMenuBar()
 			ImGui::MenuItem(this->locale->get_c("always_center_help"), "X");
 			ImGui::EndMenu();
 		}
+		if (ImGui::BeginMenu(std::to_string((int)ImGui::GetIO().Framerate).c_str()))
+		{
+			ImGui::EndMenu();
+		}
 		ImGui::EndMainMenuBar();
 	}
 }
@@ -276,6 +286,22 @@ void Gui::updateControlSim()
 		{
 			this->soundManager->play("click");
 			this->isAlwaysCenter = !this->isAlwaysCenter;
+		}
+		ImGui::Columns(1);
+		ImGui::Separator();
+
+		ImGui::Columns(2, "control2", false);
+		if (ImGui::Button(this->locale->get_c("trajectory"), ImVec2(ImGui::GetContentRegionAvail().x, 0)))
+		{
+			this->soundManager->play("click");
+			this->enable_trajectory = !this->enable_trajectory;
+			this->simulation->setTrajectory(this->enable_trajectory);
+		}
+		ImGui::NextColumn();
+		if (ImGui::Button(this->locale->get_c("v_to_null"), ImVec2(ImGui::GetContentRegionAvail().x, 0)))
+		{
+			this->soundManager->play("click");
+			this->v_to_null = !this->v_to_null;
 		}
 		ImGui::Columns(1);
 		ImGui::Separator();

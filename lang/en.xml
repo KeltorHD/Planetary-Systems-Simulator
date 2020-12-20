@@ -71,5 +71,7 @@
     <escape>Escape</escape>
     <play_pause_help>Play/Pause</play_pause_help>
     <always_center_help>Always center</always_center_help>
+    <trajectory>En/dis. trajectory</trajectory>
+    <v_to_null>0/!0 V for the masses itself. body</v_to_null>
   </simulation>
 </text>
