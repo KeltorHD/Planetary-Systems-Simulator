@@ -55,7 +55,6 @@ private:
 	std::string systemDescription;						/*описание симулируемой системы*/
 	std::vector<std::list<sf::Vector2f>> trajectory;	/*траектория движения объектов*/
 	bool isTrajectory;									/*включено ли отображение траектории*/
-	size_t max_count_point;								/*максимальное колчиство точек в траектории*/
 
 	void clear();  /*очистка текущей системы*/
 

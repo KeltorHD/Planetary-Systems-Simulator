@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<system>
+    <system_name>Two stars</system_name>
+    <description></description>
+    <object>
+        <name>DEFAULT</name>
+        <type>5</type>
+        <mass>1009</mass>
+        <x>0</x>
+        <y>0</y>
+        <vx>0</vx>
+        <vy>-0.5</vy>
+        <r>61</r>
+        <color>
+            <r>235</r>
+            <g>214</g>
+            <b>107</b>
+        </color>
+    </object>
+    <object>
+        <name>DEFAULT</name>
+        <type>4</type>
+        <mass>1500</mass>
+        <x>-796.2142333984375</x>
+        <y>-38.464481353759766</y>
+        <vx>0</vx>
+        <vy>0.5</vy>
+        <r>49</r>
+        <color>
+            <r>95</r>
+            <g>95</g>
+            <b>239</b>
+        </color>
+    </object>
+</system>

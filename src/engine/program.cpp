@@ -146,6 +146,8 @@ void Program::updateDt_ImGui()
 
 void Program::updateSFMLEvents()
 {
+	std::queue<sf::Event>().swap(this->stateData.events); /*очищение очереди*/
+	
 	while (this->window->pollEvent(this->sfEvent))
 	{
 		ImGui::SFML::ProcessEvent(this->sfEvent);

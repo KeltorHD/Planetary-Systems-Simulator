@@ -8,6 +8,7 @@ void SimulationState::initVariables()
 	this->keyTimeMax = 10.f;
 
 	this->simulation.loadDemoSystem();
+	this->gui.updateTypes();
 
 	this->camera.setSize
 	(
@@ -96,16 +97,36 @@ void SimulationState::updateInput(const float& dt)
 		this->camera.move(camera_move * dt, 0);
 	}
 
+	/*обработка событий*/
+	float deltaWheel{ 0 };
+	size_t length{ this->stateData->events.size() };
+	for (size_t i = 0; i < length; i++)
+	{
+		sf::Event event = this->stateData->events.front();
+		this->stateData->events.pop();
+		this->stateData->events.push(event);
+		if (event.type == sf::Event::MouseWheelScrolled
+			&& event.mouseWheelScroll.wheel == sf::Mouse::VerticalWheel)
+		{
+			deltaWheel = event.mouseWheelScroll.delta;
+			break;
+		}
+	}
+
 	/*camera scroll*/
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(this->keybinds.at("CAM_SCROLL_UP")))
-		|| sf::Keyboard::isKeyPressed(sf::Keyboard::Key(this->keybinds.at("CAM_SCROLL_UP2"))))
+		|| sf::Keyboard::isKeyPressed(sf::Keyboard::Key(this->keybinds.at("CAM_SCROLL_UP2")))
+		|| (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(this->keybinds.at("CTRL")))
+			&& deltaWheel > 0))
 	{
-		this->camera.zoom(1.f - camera_scroll);
+		this->camera.zoom(1.f - (deltaWheel ? 5 : 1) * camera_scroll);
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(this->keybinds.at("CAM_SCROLL_DOWN")))
-		|| sf::Keyboard::isKeyPressed(sf::Keyboard::Key(this->keybinds.at("CAM_SCROLL_DOWN2"))))
+		|| sf::Keyboard::isKeyPressed(sf::Keyboard::Key(this->keybinds.at("CAM_SCROLL_DOWN2")))
+		|| (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(this->keybinds.at("CTRL")))
+			&& deltaWheel < 0))
 	{
-		this->camera.zoom(1.f + camera_scroll);
+		this->camera.zoom(1.f + (deltaWheel ? 5 : 1) * camera_scroll);
 	}
 
 	/*добавление объекта, открытие меню изменения добавленного объекта*/

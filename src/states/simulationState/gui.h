@@ -33,6 +33,9 @@ public:
 	void setKoef(float koef);
 	void setAlwaysCenter(bool cond);
 
+	/*func*/
+	void updateTypes(); /*обновление типов объектов в векторе*/
+
 private:
 	/*связь с simulation*/
 	PhysSimulation* simulation;
@@ -57,6 +60,7 @@ private:
 	SpaceObj* open_edit_menu;     /*если не nullptr, открываем соответствующее меню изменения*/
 	char* edit_name_obj;          /*изменение имени объекта*/
 	char** type_names;            /*имена всех типов объектов*/
+	std::vector<int> index_types; /*типы объектов*/
 	char** systems;               /*доступные системы для загрузки*/
 	size_t systems_length;        /*количество доступных систем*/
 	bool enable_trajectory;		  /*включено ли отображение траектории*/

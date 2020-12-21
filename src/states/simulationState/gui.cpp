@@ -29,7 +29,10 @@ Gui::Gui(PhysSimulation* phys, const Locale* locale, SoundManager* soundManager,
 	this->edit_name_obj = new char[256]{ 0 };
 	this->type_names = new char* [size_t(SpaceObj::obj_t::count)];
 
-	for (size_t i = 0; i < size_t(SpaceObj::obj_t::count); i++)
+	/*типы конкретных объектов*/
+	this->updateTypes();
+
+	for (size_t i = 0; i < size_t(SpaceObj::obj_t::count); i++) /*имена типов*/
 	{
 		std::string tmp = this->locale->get_s(SpaceObj::objToString(SpaceObj::obj_t(i)));
 		this->type_names[i] = new char[tmp.length() + 1];
@@ -41,7 +44,7 @@ Gui::Gui(PhysSimulation* phys, const Locale* locale, SoundManager* soundManager,
 	std::copy(this->simulation->getDesc().begin(), this->simulation->getDesc().end(), this->input_desc);
 	this->input_desc[this->simulation->getDesc().length()] = 0;
 
-	std::vector<std::string> v;
+	std::vector<std::string> v; /*доступные системы*/
 	for (const auto& entry : std::filesystem::directory_iterator("systems/"))
 	{
 		std::string tmp = entry.path().string().substr
@@ -143,6 +146,10 @@ void Gui::update()
 	if (this->v_to_null)
 		this->simulation->vToNullForMaxObj();
 
+	/*если количество планет изменилось*/
+	if (this->index_types.size() != this->simulation->getCountObj())
+		this->updateTypes();
+
 	/*отрисовка меню вверху экрана*/
 	this->updateMainMenuBar();
 
@@ -193,6 +200,16 @@ void Gui::setKoef(float koef)
 void Gui::setAlwaysCenter(bool cond)
 {
 	this->isAlwaysCenter = cond;
+}
+
+void Gui::updateTypes()
+{
+	/*типы конкретных объектов*/
+	this->index_types.resize(this->simulation->getCountObj());
+	for (size_t i = 0; i < this->simulation->getCountObj(); i++)
+	{
+		this->index_types[i] = static_cast<int>(this->simulation->getObjects()[i]->getType());
+	}
 }
 
 void Gui::updateMainMenuBar()
@@ -373,6 +390,7 @@ void Gui::updateEditSim()
 				this->enableAddMenu = false;
 				this->ctrl = control_t::paused;
 				this->simulation->loadSystemXml(std::string("systems/") + this->systems[system_input] + ".xml");
+				this->updateTypes();
 				this->camera.setCenter(this->simulation->getMaxMassCoord());
 			}
 
@@ -401,6 +419,7 @@ void Gui::updateEditSim()
 				this->open_edit_menu = nullptr;
 				this->ctrl = control_t::paused;
 				this->simulation->createSystem(this->new_system_name, this->new_system_desc);
+				this->updateTypes();
 				this->camera.setCenter(this->simulation->getMaxMassCoord());
 			}
 
@@ -416,7 +435,6 @@ void Gui::updateEditSim()
 		{
 			//this->open_edit_menu = nullptr;
 			static ImVec4 color{};
-			static int index_type{};
 			for (size_t i = 0; i < this->simulation->getCountObj(); i++)
 			{
 				if (this->simulation->getObjects()[i] == this->open_edit_menu) /*открываем, если нажали на объект*/
@@ -448,9 +466,9 @@ void Gui::updateEditSim()
 						this->simulation->setObjects()[i]->setColor(static_cast<sf::Color>(color));
 					}
 
-					if (ImGui::Combo(this->locale->get_c("object_type"), &index_type, this->type_names, static_cast<int>(SpaceObj::obj_t::count)))
+					if (ImGui::Combo(this->locale->get_c("object_type"), &this->index_types[i], this->type_names, static_cast<int>(SpaceObj::obj_t::count)))
 					{
-						this->simulation->setObjects()[i]->setType(SpaceObj::obj_t(index_type));
+						this->simulation->setObjects()[i]->setType(SpaceObj::obj_t(this->index_types[i]));
 					}
 
 					ImGui::InputDouble(this->locale->get_c("mass"), &this->simulation->setObjects()[i]->setMass(), 10., 50.0, "%.3f");
@@ -539,6 +557,7 @@ void Gui::updateAddObj()
 		{
 			this->soundManager->play("click");
 			this->simulation->addObj(*this->add_obj);
+			this->updateTypes();
 			delete this->add_obj;
 			this->add_obj = nullptr;
 			this->isAdding = false;
