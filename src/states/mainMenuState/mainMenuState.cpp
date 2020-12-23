@@ -235,7 +235,7 @@ void MainMenuState::updateSettingsGUI()
 
 void MainMenuState::update(const float& dt)
 {
-	this->simulation.update(2*dt);
+	this->simulation.update(2 * dt > 2.f ? 0.01f : 2 * dt);
 
 	this->updateInput(dt);
 	this->updateGUI();
