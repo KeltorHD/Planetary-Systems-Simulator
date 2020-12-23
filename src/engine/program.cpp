@@ -91,7 +91,7 @@ void Program::initStateData()
 	this->stateData.soundManager->loadSound("click");
 	this->stateData.soundManager->setVolume("backmusic", this->programSettings.musicVolume);
 	this->stateData.soundManager->setVolume("click", this->programSettings.soundVolume);
-	this->stateData.soundManager->setRepeatre("backmusic", true);
+	this->stateData.soundManager->setRepeat("backmusic", true);
 	this->stateData.soundManager->play("backmusic");
 }
 

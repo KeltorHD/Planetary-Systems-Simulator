@@ -2,7 +2,7 @@
 
 #include "programSettings/programSettings.hpp"
 #include "localisation/locale.hpp"
-#include "soundManager/soundManager.h"
+#include "soundManager/soundManager.hpp"
 
 class State;
 

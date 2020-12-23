@@ -2,7 +2,7 @@
 
 #include "physSim/physSimulation.hpp"
 #include "localisation/locale.hpp"
-#include "soundManager/soundManager.h"
+#include "soundManager/soundManager.hpp"
 
 class Gui
 {

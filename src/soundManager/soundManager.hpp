@@ -14,7 +14,7 @@ public:
 	void setVolume(std::string name, float volume);
 
 	/*set repeat*/
-	void setRepeatre(std::string name, bool repeat);
+	void setRepeat(std::string name, bool repeat);
 	
 	/*play*/
 	void play(std::string name);

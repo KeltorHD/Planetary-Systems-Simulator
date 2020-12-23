@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "soundManager.h"
+#include "soundManager.hpp"
 
 SoundManager::SoundManager(const std::string& path_to_sounds, const std::string& format)
 	:path(path_to_sounds), format(format)
@@ -33,7 +33,7 @@ void SoundManager::setVolume(std::string name, float volume)
 	this->sound[name].setVolume(volume);
 }
 
-void SoundManager::setRepeatre(std::string name, bool repeat)
+void SoundManager::setRepeat(std::string name, bool repeat)
 {
 	this->sound[name].setLoop(repeat);
 }
