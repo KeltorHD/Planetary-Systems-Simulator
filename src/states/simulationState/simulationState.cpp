@@ -158,6 +158,7 @@ void SimulationState::update(const float& dt)
 	this->updateKeyTime(dt);
 	if (this->gui.getControl() != Gui::control_t::paused)
 	{
+		/*используем dt для того, чтобы объекты двигались равномерно при разных FPS*/
 		this->simulation.update((this->gui.getControl() == Gui::control_t::play_koef ? this->gui.getKoef() : 1.f) * 2.f * dt);
 	}
 
